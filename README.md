@@ -1,2 +1,0 @@
-# FazbearFightClub
-TheFightOf87
