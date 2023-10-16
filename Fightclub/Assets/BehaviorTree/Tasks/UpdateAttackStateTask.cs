@@ -6,33 +6,26 @@ using UnityEngine;
 
 namespace BehaviorTree
 {
-    public class CheckAttackStateDecor : Node
+    public class UpdateAttackStateTask : Node
     {
-        Transform transformParent;
-        public CheckAttackStateDecor(List<Node> childrenNodes) : base(childrenNodes){ }
+        public UpdateAttackStateTask() : base(){ }
 
         public override NodeState Evaluate()
         {
-            //if AttackState data not in tree, add it to tree
-            if (findData("AttackState") == null)
-            {
-                Debug.LogWarning("AttackState data not found");
-                addData("AttackState", AttackState.NONE);
+            //Debug.Log("Updating Attack State");
+            if (!checkDataStatus("AttackState", AttackState.NONE))
                 return NodeState.FAILURE;
-            }
-            //if AttackState data value is not of type AttackState in tree
-            if (findData("AttackState") is not AttackState)
-            {
-                Debug.LogError("AttackState data in tree is not of type AttackState");
-                return NodeState.FAILURE;
-            }
+            //If no attack is currently being performed, there is nothing to evaluate
             if ((AttackState)findData("AttackState") == AttackState.NONE)
-                return childrenNodes[0].Evaluate();
+                return NodeState.SUCCESS;
 
+            //Gets the "CurrentAttack" being performed and calculates its frames using the starting frame and current frame of the game round
+            //-> AttackState.START_UP > AttackState.ACTIVE > AttackState.RECOVERY > AttackState.NONE
+            //-> activates hitbox switching to AttackState.ACTIVE state
+            //-> deactivates hitbox switching to AttackState.RECOVERY state
             CurrentAttackData curAttack = (CurrentAttackData)findData("CurrentAttack");
             MoveData curAttackData = curAttack.GetMoveData;
             int frameAttackStarted = curAttack.GetStartingFrame;
-
             switch ((AttackState)findData("AttackState"))
             {
                 //switch to active state
@@ -40,7 +33,7 @@ namespace BehaviorTree
                     if (GameManager.Instance.GetCurrentFrame - frameAttackStarted > curAttackData.startUpFrames)
                     {
                         removeData("AttackState");
-                        addData("AttackState", AttackState.ACTIVE);
+                        root.addData("AttackState", AttackState.ACTIVE);
                         curAttack.GetHitbox.SetActive(true);
                     }
                     break;
@@ -48,8 +41,8 @@ namespace BehaviorTree
                 case AttackState.ACTIVE:
                     if (GameManager.Instance.GetCurrentFrame - frameAttackStarted > curAttackData.startUpFrames + curAttackData.activeFrames)
                     {
-                        removeData("AttackState");
-                        addData("AttackState", AttackState.RECOVERY);
+                        removeData("AttackState"); 
+                        root.addData("AttackState", AttackState.RECOVERY);
                         curAttack.GetHitbox.SetActive(false);
                     }
                     break;
@@ -58,15 +51,17 @@ namespace BehaviorTree
                     if (GameManager.Instance.GetCurrentFrame - frameAttackStarted > curAttackData.startUpFrames + curAttackData.activeFrames + curAttackData.recoveryFrames)
                     {
                         removeData("AttackState");
-                        addData("AttackState", AttackState.NONE);
+                        root.addData("AttackState", AttackState.NONE);
                         removeData("CurrentAttack");
                         return NodeState.SUCCESS;
                     }
                     break;
             }
-            Debug.Log("CURRENT ATTACK: " + curAttackData.moveName + "\n" + 
+
+            /*Debug.Log("CURRENT ATTACK: " + curAttackData.moveName + "\n" + 
                 "CURRENT FRAME: " + (GameManager.Instance.GetCurrentFrame - frameAttackStarted).ToString() + 
-            "(" + (AttackState)findData("AttackState") + ")");
+            "(" + (AttackState)findData("AttackState") + ")");*/
+
             return NodeState.RUNNING;
         }
     }

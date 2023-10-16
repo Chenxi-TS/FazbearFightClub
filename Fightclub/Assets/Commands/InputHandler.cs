@@ -24,7 +24,7 @@ public class InputHandler
     }
     public List<Command> ReadInput()
     {
-        Debug.Log("Reading Input");
+        //Debug.Log("Reading Input");
         List<Command> inputCommands = new List<Command>();
         foreach (KeyValuePair<KeyCode, Command> pair in keyToCommand)
         {

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609750b2b945ad47bd00c0ac6e3a8a4, type: 3}
+  m_Name: Power Outage
+  m_EditorClassIdentifier: 
+  moveName: Power Outage
+  type: 4
+  inputNotations: MH
+  damage: 22
+  hitType: 3
+  blockDamage: 0
+  startUpFrames: 7
+  activeFrames: 4
+  recoveryFrames: 7
+  hitAdvantage: 0
+  blockAdvantage: 0
+  powerType: 2
+  specialCancelables: []
+  moveAnimation: {fileID: 0}
+  hitbox: {fileID: 8226810311282389691, guid: 9eded0127889ec1488e7369faec9a14b, type: 3}

@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Move", menuName = "New Move")]
-
-
 public class MoveData : ScriptableObject
 {
     public enum MoveType
     {
-        LIGHT,
-        MEDIUM,
-        HEAVY,
-        COMMAND,
-        SPECIAL,
-        SUPER
+        LIGHT = 1,
+        MEDIUM = 2,
+        HEAVY = 3,
+        COMMAND = 4,
+        SPECIAL = 5,
+        SUPER = 6
     }
     public enum HitType
     {
         OVERHEAD,
         MID,
-        LOW
+        LOW,
+        GRAB
     }
     public enum PowerType
     {
@@ -28,14 +27,6 @@ public class MoveData : ScriptableObject
         KNOCK_DOWN,
         HARD_KNOCK_DOWN
     }
-    /*public MoveData(string moveName, MoveType type, string inputNotations, int startUpFrames, int activeFrames, int recoveryFrames
-        , bool antiAir, bool overhead, bool low, bool knocksDown, bool hardKnocksDown, AnimationClip moveAnimation, bool specialCancelable
-        , string nameOfSpecialThatCancelsThisMove)
-    {
-        moveName = this.moveName;
-        type = this.type;
-        inputNotations = this.inputNotations;
-    }*/
     public MoveData(string name, MoveType type, int start, int active, int recovery)
     {
         moveName = name;
@@ -58,12 +49,8 @@ public class MoveData : ScriptableObject
     public int blockAdvantage;
 
     public PowerType powerType;
-
-    public bool specialCancelable;
-    public string nameOfSpecialThatCancelsThisMove = "Leave blank if this is a special and not cancelable";
+    public List<MoveData> specialCancelables;
 
     public AnimationClip moveAnimation;
-
-
     public GameObject hitbox;
 }

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609750b2b945ad47bd00c0ac6e3a8a4, type: 3}
+  m_Name: Hand-Break
+  m_EditorClassIdentifier: 
+  moveName: Hand-Break
+  type: 2
+  inputNotations: M
+  damage: 7
+  hitType: 1
+  blockDamage: 2
+  startUpFrames: 5
+  activeFrames: 6
+  recoveryFrames: 5
+  hitAdvantage: 9
+  blockAdvantage: -2
+  powerType: 0
+  specialCancelables: []
+  moveAnimation: {fileID: 7400000, guid: f1d11ee28b35d764c9f446e8b386dde1, type: 2}
+  hitbox: {fileID: 1312826613937417264, guid: 920e2769a9fad0c42a781476266b0639, type: 3}

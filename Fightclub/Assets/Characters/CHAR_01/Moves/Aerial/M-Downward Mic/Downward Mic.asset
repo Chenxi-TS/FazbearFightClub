@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9609750b2b945ad47bd00c0ac6e3a8a4, type: 3}
-  m_Name: Hand-Break
+  m_Name: Downward Mic
   m_EditorClassIdentifier: 
-  moveName: Hand-Break
-  type: 1
+  moveName: Downward Mic
+  type: 2
   inputNotations: M
-  damage: 7
-  hitType: 1
-  blockDamage: 2
-  startUpFrames: 5
-  activeFrames: 6
-  recoveryFrames: 5
+  damage: 9
+  hitType: 0
+  blockDamage: 2.5
+  startUpFrames: 7
+  activeFrames: 4
+  recoveryFrames: 10
   hitAdvantage: 9
-  blockAdvantage: -2
+  blockAdvantage: 0
   powerType: 0
-  specialCancelable: 0
-  nameOfSpecialThatCancelsThisMove: 
-  moveAnimation: {fileID: 7400000, guid: f1d11ee28b35d764c9f446e8b386dde1, type: 2}
-  hitbox: {fileID: 1312826613937417264, guid: 920e2769a9fad0c42a781476266b0639, type: 3}
+  specialCancelables: []
+  moveAnimation: {fileID: 0}
+  hitbox: {fileID: 950732647047880832, guid: 6dd2251c2a34054429941aab0636ffa9, type: 3}

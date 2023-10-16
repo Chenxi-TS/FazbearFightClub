@@ -6,12 +6,8 @@ namespace BehaviorTree
 {
     public class Selector : Node
     {
-        string selectorName;
         public Selector() { }
-        public Selector(List<Node> childrenNodes, string name) : base(childrenNodes) 
-        { 
-            selectorName = name;
-        }
+        public Selector(List<Node> childrenNodes) : base(childrenNodes) { }
         public override NodeState Evaluate()
         {
             if (childrenNodes.Count <= 0)

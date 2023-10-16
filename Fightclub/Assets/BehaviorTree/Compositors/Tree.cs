@@ -11,7 +11,10 @@ namespace BehaviorTree
     public enum GroundState
     {
         GROUNDED,
-        AIRBORNE
+        START_UP,
+        AIRBORNE,
+        CROUCHING,
+        RECOVERY
     }
     public enum AttackState
     {
@@ -19,7 +22,7 @@ namespace BehaviorTree
         START_UP,
         ACTIVE,
         RECOVERY,
-        HIT_STUN,
+        HIT_STUN, //move these to a enum later
         HIT_STUN_RECOVERY,
         KNOCK_DOWN,
         HARD_KNOCK_DOWN,
@@ -38,12 +41,11 @@ namespace BehaviorTree
 
         protected Rigidbody rb;
         protected Transform transform;
+        protected Animator animator;
 
         protected Dictionary<KeyCode, Command> characterMoveList = new Dictionary<KeyCode, Command>();
-
         protected Dictionary<int, List<string>> queuedActions = new Dictionary<int, List<string>>();
 
-        protected Animator animator;
         public Tree(int playerSlotNumber)
         {
             characterMoveList.Clear();
@@ -144,7 +146,7 @@ namespace BehaviorTree
                     string possibleDiagonal = checkForDiagonals(eventKey, action);
                     if(possibleDiagonal != eventKey)
                     {
-                        Debug.Log(curFrame + " (REMOVED AND CHANGED INTO ⤵)");
+                        //Debug.Log(curFrame + " (REMOVED AND CHANGED INTO ⤵)");
                         queuedActions[curFrame].Remove(action);
                         eventKey = possibleDiagonal;
                         break;
@@ -157,7 +159,7 @@ namespace BehaviorTree
                 queuedActions.Add(curFrame, new List<string>());
                 queuedActions[curFrame].Add(eventKey);
             }
-            Debug.Log("queued action " + eventKey + " on frame " + curFrame);
+            //Debug.Log("queued action " + eventKey + " on frame " + curFrame);
         }
         string checkForDiagonals(string currentKey, string exisitingKey)
         {

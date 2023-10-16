@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -27,6 +28,12 @@ namespace BehaviorTree
                 child.SetParent(this);
                 Debug.Log(child + "'s parent is " + child.parent);
             }
+        }
+        public Node(Node child)
+        {
+            this.childrenNodes.Add(child);
+            child.SetParent(this);
+            Debug.Log(child + "'s parent is " + child.parent);
         }
         public void SetParent(Node parent)
         {
@@ -77,6 +84,28 @@ namespace BehaviorTree
             }
             else
                 return parent.findRoot();
+        }
+        protected bool checkDataStatus(string dataKey, object defaultData)
+        {
+            //Checking status of "dataKey" data
+            //-> adds "dataKey" with defaultData on initial run to root, return false
+            //-> checks if "dataKey" data type is type of defaultData.GetType(), return false
+            //-> if "dataKey" exist and is of defaultData.GetType(), return true
+            if (root == null)
+                root = findRoot();
+            //Debug.Log(root);
+            if (findData(dataKey) == null)
+            {
+                Debug.LogWarning(dataKey + " data not found");
+                root.addData(dataKey, defaultData);
+                return false;
+            }
+            if (findData(dataKey).GetType() != defaultData.GetType())
+            {
+                Debug.LogError(dataKey + " data in tree is not of type " + defaultData.GetType());
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -6,31 +6,20 @@ namespace BehaviorTree
 {
     public class CheckGroundStateDecorator : Node
     {
-        GroundState trueGroundState;
-        public CheckGroundStateDecorator(List<Node> listOfChildren, GroundState desiredGroundState): base(listOfChildren) 
+        GroundState desiredState;
+        public CheckGroundStateDecorator(GroundState desiredState, Node child) : base(child)
         {
-            trueGroundState = desiredGroundState;
+            this.desiredState = desiredState;
         }
         public override NodeState Evaluate()
         {
-            if (root == null)
-                root = findRoot();
-            if (findData("Grounded") == null)
-            {
-                Debug.LogWarning("Grounded data not found");
-                root.addData("Grounded", GroundState.GROUNDED);
+            if (!checkDataStatus("GroundState", GroundState.GROUNDED))
                 return NodeState.FAILURE;
-            }
-            if ((GroundState)findData("Grounded") != trueGroundState)
-                return NodeState.FAILURE;
-            else
+            //Debug.Log("GroundState: " + (GroundState)findData("GroundState"));
+            if((GroundState)findData("GroundState") == desiredState)
             {
-                foreach(Node child in childrenNodes)
-                {
-                    return child.Evaluate();
-                }
+                return childrenNodes[0].Evaluate();
             }
-            Debug.Log("Requested GroundState is true but decorator has no children");
             return NodeState.FAILURE;
         }
     }

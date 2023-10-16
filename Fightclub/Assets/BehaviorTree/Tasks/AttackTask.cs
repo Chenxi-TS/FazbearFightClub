@@ -8,6 +8,7 @@ namespace BehaviorTree
     public class AttackTask : Node
     {
         MoveData moveData;
+        MoveData prereqMove = null;
         Tree masterTree;
         GameObject hitbox;
         public AttackTask (MoveData moveData, Tree masterTree, Transform transform)
@@ -19,44 +20,70 @@ namespace BehaviorTree
             hitbox.transform.localPosition = Vector3.zero;
             hitbox.SetActive(false);
         }
+        //If this move is a Rekka (follow up move/multi hit move),
+        //specify the prerequisite move
+        public AttackTask(MoveData moveData, Tree masterTree, Transform transform, MoveData prereqMove)
+        {
+            this.moveData = moveData;
+            this.masterTree = masterTree;
+            hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
+            hitbox.transform.SetParent(transform);
+            hitbox.transform.localPosition = Vector3.zero;
+            hitbox.SetActive(false);
+            this.prereqMove = prereqMove;
+        }
 
         public override NodeState Evaluate()
         {
             if (root == null)
                 root = findRoot();
-            //if AttackState is not found, CheckAttackStateDecor probably not in tree
+            //Checking status of "AttackState"
+            //-> warns if "AttackState" is missing
+            //-> warns if "AttackState" is not type of AttackState
             if (findData("AttackState") == null)
             {
                 Debug.LogError("AttackState data is not in tree");
                 return NodeState.FAILURE;
             }
-            //if AttackState data value is not of type AttackState in tree
             if (findData("AttackState") is not AttackState)
             {
                 Debug.LogError("AttackState data in tree is not of type AttackState");
                 return NodeState.FAILURE;
             }
 
-            AttackState currentAttackState;
-            currentAttackState = (AttackState)findData("AttackState");
-            //if in hit recovery, return
+            //Checks if this move can be performed without interuption
+            //-> FAILURE if we are being hit
+            //-> FAILURE if current attack is not the prerequisite move
+            //-> perform attack if no move is being performed currently
+            AttackState currentAttackState = (AttackState)findData("AttackState");
             if (currentAttackState >= AttackState.HIT_STUN)
             {
                 Debug.Log("Recovering from hit");
                 return NodeState.FAILURE;
             }
-            //if no move is currently being formed, perform attack
-            if (currentAttackState == AttackState.NONE)
+            if (currentAttackState == AttackState.NONE && prereqMove == null)
                 performAttack();
-            //check if current move is cancelable by this attack
+
+            //Checks if this move can be interupt current move
+            //-> checks if this move has a prereqMove
+            //-> normals cancelable in order of H>M>L
+            //-> commands cancel all normals
+            //-> specials cancel all normals and specials
+            //-> specials can cancel specified specials
             CurrentAttackData currentAttackData = (CurrentAttackData)findData("CurrentAttack");
+            if (currentAttackData == null)
+                return NodeState.FAILURE;
+            if (prereqMove != null)
+                if (currentAttackData.GetMoveData != prereqMove)
+                    return NodeState.FAILURE;
             MoveData.MoveType currentAttackType = currentAttackData.GetMoveData.type;
+            //Debug.Log("CURRENT TYPE " + currentAttackType);
             if (currentAttackState == AttackState.RECOVERY)
             {
                 switch (currentAttackType)
                 {
                     case < MoveData.MoveType.COMMAND:
-                        if (currentAttackType < moveData.type)
+                        if (moveData.type > currentAttackType)
                             performAttack();
                         break;
                     case MoveData.MoveType.COMMAND:
@@ -68,15 +95,20 @@ namespace BehaviorTree
                         {
                             performAttack();
                         }
-                        else if (currentAttackData.GetMoveData.specialCancelable)
+                        else if (currentAttackData.GetMoveData.specialCancelables.Count > 0)
                         {
-                            if (currentAttackData.GetMoveData.nameOfSpecialThatCancelsThisMove == moveData.moveName)
-                                performAttack();
+                            foreach(MoveData specials in currentAttackData.GetMoveData.specialCancelables)
+                            {
+                                if (specials.type != MoveData.MoveType.SPECIAL)
+                                    Debug.LogError(currentAttackData.GetMoveData.moveName + " has " + specials.moveName + " in specialCancelables and is not a special");
+                                if (specials.moveName == moveData.moveName)
+                                    performAttack();
+                            }
                         }
                         break;
                 }
             }
-            return NodeState.RUNNING;
+            return NodeState.FAILURE;
         }
 
         NodeState performAttack()

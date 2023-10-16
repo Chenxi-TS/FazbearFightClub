@@ -40,7 +40,9 @@ namespace BehaviorTree
                 Debug.LogError("Rigibody is null in " + moveName);
                 return NodeState.FAILURE;
             }
-            rb.velocity = (float)findData("Speed") * new Vector3(direction,1 * rb.velocity.y,0); //moves rb by speed, keep Y velocity
+            if((GroundState)findData("GroundState") == GroundState.GROUNDED)
+                rb.velocity = new Vector3((float)findData("Speed") * direction, rb.velocity.y,0);
+
             return NodeState.SUCCESS;
         }
     }
