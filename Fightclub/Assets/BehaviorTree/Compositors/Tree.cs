@@ -94,7 +94,6 @@ namespace BehaviorTree
             List<string> allQueuedActions = new List<string>();
             if (currentFrame - numberOfFramesBack < 0)
             {
-                Debug.LogError("Not enough frames back to check");
                 return null;
             }
             if (numberOfFramesBack == 0)
@@ -125,7 +124,6 @@ namespace BehaviorTree
                 return;
             try
             {
-                Debug.Log("PLAYING ANIMATION " + animation.name);
                 animator.Play(animation.name);
             }
             catch (Exception e)

@@ -58,52 +58,35 @@ namespace BehaviorTree
             //Command: Grab: Power Outage
             MoveData GRAB = moveList[10];
             AttackTask grab = new AttackTask(GRAB, this, transform);
+
+            //Special: Weak Mic Throw
+            MoveData WEAK_MIC_THROW = moveList[11];
+            AttackTask weakMicThrow = new AttackTask(WEAK_MIC_THROW,  this, transform);
+
             #endregion
             //character tree below//
             root =
             new Selector(new List<Node> //First
             {
                 new BurstTask(),
-                new HitUpdateTask(),
                 //Updates
-                new Invert(
-                    new Parallel(new List<Node> 
-                    {
-                        new UpdateAttackStateTask(),
-                        new UpdateGroundStateTask(rb, transform),
-                    })
-                ),
+                new UpdateGroundStateTask(rb, transform),
+                new UpdateHitTask(),
+                new UpdateAttackStateTask(),
                 //Movements & Attacks
-                new Selector(new List<Node> 
+                new Selector(new List<Node>
                 {
-                    new CheckGroundStateDecorator(GroundState.GROUNDED,
-                        new Selector(new List<Node>{ 
-                            //Jump & Crouch
-                            new Selector(new List<Node>
-                            {
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 10)}, this, "9", 0), //Jump right
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 10)}, this, "7", 0), //Jump left
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 10)}, this, "8", 0), //Jump up
-                                //new CheckQueueDecorator(new List<Node>{ new }) CROUCH
-                                //Left & Right
-                            }),
-                            new Selector (new List<Node>
-                            {
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left")}, this, "4", 0),
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right")}, this, "6", 0)
-                            })
-                        })
-                    ),
                     // Attacks
-                    new Selector(new List<Node> 
+                    new Selector(new List<Node>
                     {
-                        //Other Attacks
-                        new CheckQueueDecorator(new List<Node>{ frameBash}, this, FRAME_BASH.inputNotations, 1),
-                        new CheckQueueDecorator(new List<Node>{ grab}, this, GRAB.inputNotations, 1),
                         //Standing Attacks
                         new CheckGroundStateDecorator(GroundState.GROUNDED,
-                            new Selector(new List<Node> 
+                            new Selector(new List<Node>
                             {
+                                new CheckQueueDecorator(new List<Node>{ frameBash}, this, FRAME_BASH.inputNotations, 1),
+                                new CheckQueueDecorator(new List<Node>{ grab}, this, GRAB.inputNotations, 1),
+                                new CheckQueueDecorator(new List<Node>{ weakMicThrow}, this, WEAK_MIC_THROW.inputNotations, 6),
+
                                 new CheckQueueDecorator(new List<Node>{ pawPunch}, this, PAW_PUNCH.inputNotations, 0),
                                 new CheckQueueDecorator(new List<Node>{ handBreak}, this, HAND_BREAK.inputNotations, 0),
                                 new CheckQueueDecorator(new List<Node>{ elbowWave}, this, ELBOW_WAVE.inputNotations,0),
@@ -128,7 +111,25 @@ namespace BehaviorTree
                                 new CheckQueueDecorator(new List<Node>{ flatFootedKick}, this, FLAT_FOOTED_KICK.inputNotations, 0)
                             })
                         ),
-                    })
+                    }),
+                    new CheckGroundStateDecorator(GroundState.GROUNDED,
+                        new Selector(new List<Node>{ //Movements
+                            //Jump & Crouch
+                            new Selector(new List<Node>
+                            {
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 10)}, this, "9", 0), //Jump right
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 10)}, this, "7", 0), //Jump left
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 10)}, this, "8", 0), //Jump up
+                                //new CheckQueueDecorator(new List<Node>{ new }) CROUCH
+                                //Left & Right
+                            }),
+                            new Selector (new List<Node>
+                            {
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left")}, this, "4", 0),
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right")}, this, "6", 0)
+                            })
+                        })
+                    )
                 })
             });
         }

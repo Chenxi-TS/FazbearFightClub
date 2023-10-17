@@ -35,6 +35,7 @@ namespace BehaviorTree
 
         public override NodeState Evaluate()
         {
+            Debug.Log("AttackState reached " + moveData.moveName);
             if (root == null)
                 root = findRoot();
             //Checking status of "AttackState"

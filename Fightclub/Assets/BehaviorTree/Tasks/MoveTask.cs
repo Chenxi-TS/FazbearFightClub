@@ -23,7 +23,7 @@ namespace BehaviorTree
 
         public override NodeState Evaluate()
         {
-            Debug.Log("move task reached " + moveName);
+            //Debug.Log("move task reached " + moveName);
             if (findData("Speed") == null)
             {
                 Debug.LogWarning("Speed data not found");
@@ -40,6 +40,8 @@ namespace BehaviorTree
                 Debug.LogError("Rigibody is null in " + moveName);
                 return NodeState.FAILURE;
             }
+            if ((AttackState)findData("AttackState") > AttackState.NONE)
+                return NodeState.FAILURE;
             if((GroundState)findData("GroundState") == GroundState.GROUNDED)
                 rb.velocity = new Vector3((float)findData("Speed") * direction, rb.velocity.y,0);
 
