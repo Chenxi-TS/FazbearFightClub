@@ -11,10 +11,13 @@ namespace BehaviorTree
         MoveData prereqMove = null;
         Tree masterTree;
         GameObject hitbox;
-        public AttackTask (MoveData moveData, Tree masterTree, Transform transform)
+        Projectile projectile;
+        Rigidbody rb;
+        public AttackTask (MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform)
         {
             this.moveData = moveData;
             this.masterTree = masterTree;
+            this.rb = rb;
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
             hitbox.transform.localPosition = Vector3.zero;
@@ -22,10 +25,11 @@ namespace BehaviorTree
         }
         //If this move is a Rekka (follow up move/multi hit move),
         //specify the prerequisite move
-        public AttackTask(MoveData moveData, Tree masterTree, Transform transform, MoveData prereqMove)
+        public AttackTask(MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform, MoveData prereqMove)
         {
             this.moveData = moveData;
             this.masterTree = masterTree;
+            this.rb = rb;
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
             hitbox.transform.localPosition = Vector3.zero;
@@ -35,7 +39,6 @@ namespace BehaviorTree
 
         public override NodeState Evaluate()
         {
-            Debug.Log("AttackState reached " + moveData.moveName);
             if (root == null)
                 root = findRoot();
             //Checking status of "AttackState"
@@ -122,8 +125,15 @@ namespace BehaviorTree
                 Debug.Log("GameManagerNULL");
             else if (moveData == null)
                 Debug.Log("moveDataNULL");
-
-            root.addData("CurrentAttack", new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox));
+            rb.velocity = new Vector3 (0, rb.velocity.y, 0);
+            if (moveData.projectile != null)
+            {
+                GameObject projectileClone = MonoBehaviour.Instantiate(moveData.projectile);
+                projectileClone.SetActive(false);
+                projectile = projectileClone.GetComponent<Projectile>();
+                projectile.setSpawn(GameManager.Instance.characters[masterTree.getcharacterID].GetComponent<MoveListHolder>().projectileFirePoints[projectile.firePointNum]);
+            }
+            root.addData("CurrentAttack", new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox, projectile));
             removeData("AttackState");
             root.addData("AttackState", AttackState.START_UP);
             masterTree.playAnimation(moveData.moveAnimation);

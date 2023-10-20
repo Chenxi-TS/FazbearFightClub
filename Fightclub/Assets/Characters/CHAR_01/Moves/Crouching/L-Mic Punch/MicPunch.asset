@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: MicPunch
   type: 1
-  inputNotations: L
+  inputNotations: Ld
   damage: 2
   hitType: 2
   blockDamage: 0.5

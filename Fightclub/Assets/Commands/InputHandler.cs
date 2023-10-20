@@ -28,6 +28,12 @@ public class InputHandler
         List<Command> inputCommands = new List<Command>();
         foreach (KeyValuePair<KeyCode, Command> pair in keyToCommand)
         {
+            if(Input.GetKeyDown(pair.Key))
+            {
+                //Debug.Log("DOWN");
+                inputCommands.Add(pair.Value);
+                pair.Value.Execute(false);
+            }
             if(Input.GetKey(pair.Key))
             {
                 inputCommands.Add(pair.Value);
@@ -35,8 +41,9 @@ public class InputHandler
             }
             if(Input.GetKeyUp(pair.Key))
             {
+                //Debug.Log("UP");
                 inputCommands.Add(pair.Value);
-                pair.Value.Execute();
+                pair.Value.Execute(true);
             }
         }
         return inputCommands;

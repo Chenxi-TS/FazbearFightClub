@@ -27,14 +27,6 @@ public class MoveData : ScriptableObject
         KNOCK_DOWN,
         HARD_KNOCK_DOWN
     }
-    public MoveData(string name, MoveType type, int start, int active, int recovery)
-    {
-        moveName = name;
-        this.type = type;
-        startUpFrames = start;
-        activeFrames = active;
-        recoveryFrames = recovery;
-    }
     public string moveName;
     public MoveType type;
     public string inputNotations = "Numpad notations, assuming facing right";
@@ -53,4 +45,7 @@ public class MoveData : ScriptableObject
 
     public AnimationClip moveAnimation;
     public GameObject hitbox;
+
+    public GameObject projectile;
+    public Transform projectileFirePoint;
 }

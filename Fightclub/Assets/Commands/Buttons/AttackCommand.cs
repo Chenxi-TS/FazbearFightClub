@@ -30,4 +30,37 @@ public class AttackCommand : Command
                 break;
         }
     }
+    public override void Execute(bool negativeEdge)
+    {
+        if(negativeEdge)
+        {
+            switch (assignedButton)
+            {
+                case AttackButtons.LIGHT:
+                    OnNotify("Le");
+                    break;
+                case AttackButtons.MEDIUM:
+                    OnNotify("Me");
+                    break;
+                case AttackButtons.HEAVY:
+                    OnNotify("He");
+                    break;
+            }
+        }
+        else
+        {
+            switch (assignedButton)
+            {
+                case AttackButtons.LIGHT:
+                    OnNotify("Ld");
+                    break;
+                case AttackButtons.MEDIUM:
+                    OnNotify("Md");
+                    break;
+                case AttackButtons.HEAVY:
+                    OnNotify("Hd");
+                    break;
+            }
+        }
+    }
 }

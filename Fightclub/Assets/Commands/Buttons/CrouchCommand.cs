@@ -8,4 +8,11 @@ public class CrouchCommand : Command
     {
         OnNotify("2");
     }
+    public override void Execute(bool negativeEdge)
+    {
+        if (negativeEdge)
+            OnNotify("2e");
+        else
+            OnNotify("2d");
+    }
 }

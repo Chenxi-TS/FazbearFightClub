@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638327296045269258
-    m_Hash: 2026101946
+      ticks: 638332540233469259
+    m_Hash: 1949264263
   m_LockFileStatus:
     m_FilePath: D:/FazbearFightClub/Fightclub/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638327296045304343
-    m_Hash: 680055695
+      ticks: 638332540233469259
+    m_Hash: 2949154624
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:

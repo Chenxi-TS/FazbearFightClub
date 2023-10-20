@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -9,68 +10,82 @@ namespace BehaviorTree
     public class CheckQueueDecorator : Node
     {
         Tree masterTree;
-        char[] inputNotations;
+        string inputNotations;
         int bufferFrames = 0;
-        public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames) : base(childrenNodes) 
+
+        string aname;
+        public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames) : base(childrenNodes)
+        {
+            this.masterTree = masterTree;
+            this.inputNotations = inputNotations;
+            this.bufferFrames = bufferFrames;
+        }
+        public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames, string aname) : base(childrenNodes) 
         { 
             this.masterTree = masterTree;
-            this.inputNotations = inputNotations.ToCharArray();
+            this.inputNotations = inputNotations;
             this.bufferFrames = bufferFrames;
+            this.aname = aname;
         }
         public override NodeState Evaluate()
         {
+            //Debug.Log("CHECK QUEUE REACHED " + aname);
             //Gets all inputs performed by player starting from the numbers of bufferframes back to current frame
             //check for required inputNotations within that time
-            List<string> actionsWithinBuffer = masterTree.getQueuedActions(bufferFrames, GameManager.Instance.GetCurrentFrame);
+            string[] inputNotationsArray = inputNotations.Split(",");
+            if(bufferFrames < inputNotationsArray.Length)
+                bufferFrames = inputNotationsArray.Length;
+            Dictionary<int, List<string>> actionsWithinBuffer = masterTree.getQueuedActions(bufferFrames, GameManager.Instance.GetCurrentFrame);
+            
             if (actionsWithinBuffer == null)
-                return NodeState.FAILURE;
-            int inputPointer = 0;
-            for(int actionPointer = 0; actionPointer < actionsWithinBuffer.Count && inputPointer < inputNotations.Length; actionPointer++)
             {
-                if (actionsWithinBuffer[actionPointer] == inputNotations[inputPointer].ToString())
-                {
-                    inputPointer++;
-                }
-                else 
-                {
-                    if (translateNotations((actionsWithinBuffer[actionPointer]), inputNotations[inputPointer].ToString()))
-                        inputPointer++;
-                }
+                Debug.Log("CHECK ACTION NULL");
+                return NodeState.FAILURE;
             }
-            if (inputPointer == inputNotations.Length)
+            int requiredInputsFound = checkRequiredInputs(actionsWithinBuffer, inputNotationsArray, 0, getFirstFrame(actionsWithinBuffer));
+            if (requiredInputsFound == inputNotationsArray.Length)
                 return childrenNodes[0].Evaluate();
             else
-                return NodeState.FAILURE;
-        }
-        bool translateNotations(string actionNotation, string inputNotation)
-        {
-            switch (inputNotation) 
             {
-                //up
-                case "8":
-                    if (actionNotation == "7" || actionNotation == "9")
-                    {
-                        //Debug.Log(actionNotation + " CASE 8");
-                        return true;
-                    }
-                    break;
-                //left
-                case "4":
-                    if (actionNotation == "7" || actionNotation == "1")
-                        return true;
-                    break;
-                //down
-                case "2":
-                    if (actionNotation == "1" || actionNotation == "3")
-                        return true;
-                    break;
-                //right
-                case "6":
-                    if (actionNotation == "9" || actionNotation == "3")
-                        return true;
-                    break;
+                Debug.Log(requiredInputsFound);
+                return NodeState.FAILURE;
             }
-            return false;
+        }
+        int checkRequiredInputs(Dictionary<int, List<string>> actionsWithinBuffer, string[] inputNotationsArray, int inputPointer, int lastFoundFrame)
+        {
+            while (inputPointer < inputNotationsArray.Length)
+            {
+                bool foundMatch = false;
+
+                // Loop over actionsWithinBuffer for every inputPointer increment
+                foreach (KeyValuePair<int, List<string>> action in actionsWithinBuffer)
+                {
+                    foreach (string s in action.Value)
+                    {
+                        if (inputNotationsArray[inputPointer] == s && action.Key >= lastFoundFrame)
+                        {
+                            inputPointer++;
+                            lastFoundFrame = action.Key;
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+                    if (foundMatch) break;
+                }
+
+                if (!foundMatch)
+                {
+                    break;
+                }
+            }
+
+            return inputPointer;
+        }
+        int getFirstFrame(Dictionary<int, List<string>> actionDictionary)
+        {
+            foreach (int frame in actionDictionary.Keys)
+                return frame;
+            return -1;
         }
     }
 }

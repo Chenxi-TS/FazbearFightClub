@@ -38,6 +38,8 @@ namespace BehaviorTree
     public class Tree : Node, Observer
     {
         public List<MoveData> allMoves;
+        protected int characterID;
+        public int getcharacterID { get { return characterID; } }
 
         protected Rigidbody rb;
         protected Transform transform;
@@ -46,8 +48,9 @@ namespace BehaviorTree
         protected Dictionary<KeyCode, Command> characterMoveList = new Dictionary<KeyCode, Command>();
         protected Dictionary<int, List<string>> queuedActions = new Dictionary<int, List<string>>();
 
-        public Tree(int playerSlotNumber)
+        public Tree(int playerSlotNumber, int characterID)
         {
+            this.characterID = characterID;
             characterMoveList.Clear();
             //movement
             JumpCommand jump = new JumpCommand();
@@ -89,29 +92,32 @@ namespace BehaviorTree
             InputHandler inputManager = new InputHandler(this, characterMoveList);
             GameManager.Instance.SetPlayerHandler(playerSlotNumber, inputManager);
         }
-        public virtual List<string> getQueuedActions(int numberOfFramesBack, int currentFrame)
+        public virtual void Evaluate() { }
+        public virtual Dictionary<int,List<string>> getQueuedActions(int numberOfFramesBack, int currentFrame)
         {
-            List<string> allQueuedActions = new List<string>();
+            Dictionary<int, List<string>> allQueuedActions = new Dictionary<int, List<string>>();
             if (currentFrame - numberOfFramesBack < 0)
             {
                 return null;
-            }
-            if (numberOfFramesBack == 0)
-            {
-                if (queuedActions.ContainsKey(currentFrame))
-                {
-                    foreach (string s in queuedActions[currentFrame])
-                        allQueuedActions.Add(s);
-
-                    return allQueuedActions;
-                }
             }
             for (int i = currentFrame - numberOfFramesBack; i <= currentFrame; i++)
             {
                 if (queuedActions.ContainsKey(i))
                 {
-                    foreach(string s in queuedActions[i])
-                        allQueuedActions.Add(s);
+                    foreach (string s in queuedActions[i])
+                    {
+                        string[] stringArray = s.Split(",");
+                        foreach (string sa in stringArray)
+                        {
+                            if (allQueuedActions.ContainsKey(i))
+                                allQueuedActions[i].Add(sa);
+                            else
+                            {
+                                allQueuedActions.Add(i, new List<string>()); 
+                                allQueuedActions[i].Add(sa);
+                            }
+                        }
+                    }
                 }
             }
             return allQueuedActions;
@@ -202,7 +208,10 @@ namespace BehaviorTree
             else if (down && left)
                 return "1";
             else if (down & right)
+            {
+                Debug.Log("RETURNS 3");
                 return "3";
+            }
             return currentKey;
         }
     }

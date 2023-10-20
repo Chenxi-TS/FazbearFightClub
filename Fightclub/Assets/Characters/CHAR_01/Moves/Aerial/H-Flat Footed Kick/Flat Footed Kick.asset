@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Flat Footed Kick
   type: 3
-  inputNotations: H
+  inputNotations: Hd
   damage: 15
   hitType: 0
   blockDamage: 7

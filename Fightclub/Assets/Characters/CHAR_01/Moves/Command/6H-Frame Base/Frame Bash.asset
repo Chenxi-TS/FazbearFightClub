@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Frame Bash
   type: 4
-  inputNotations: 6H
+  inputNotations: 6,Hd
   damage: 16
   hitType: 1
   blockDamage: 6

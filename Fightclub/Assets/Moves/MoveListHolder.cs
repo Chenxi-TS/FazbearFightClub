@@ -5,4 +5,5 @@ using UnityEngine;
 public class MoveListHolder : MonoBehaviour
 {
     public List<MoveData> moveList;
+    public List<Transform> projectileFirePoints;
 }

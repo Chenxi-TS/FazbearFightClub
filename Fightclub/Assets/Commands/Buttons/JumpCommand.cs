@@ -8,4 +8,11 @@ public class JumpCommand : Command
     {
         OnNotify("8");
     }
+    public override void Execute(bool negativeEdge)
+    {
+        if (negativeEdge)
+            OnNotify("8e");
+        else
+            OnNotify("8d");
+    }
 }

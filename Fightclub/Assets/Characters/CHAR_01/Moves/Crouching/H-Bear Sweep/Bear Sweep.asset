@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Bear Sweep
   type: 3
-  inputNotations: H
+  inputNotations: Hd
   damage: 12
   hitType: 2
   blockDamage: 7

@@ -13,6 +13,7 @@ namespace BehaviorTree
         }
         public override NodeState Evaluate()
         {
+            //Debug.Log("CHECK GROUNDSTATE REACHED");
             if (!checkDataStatus("GroundState", GroundState.GROUNDED))
                 return NodeState.FAILURE;
             //Debug.Log("GroundState: " + (GroundState)findData("GroundState"));

@@ -14,6 +14,7 @@ namespace BehaviorTree
         //-> returns NodeState.FAILURE when there is nothing to update or finished for the frame
         public override NodeState Evaluate()
         {
+            //Debug.Log("UPDATE ATTACK REACHED");
             //If "AttackState" data does not exist in tree or if AttackState.NONE, there is nothing to update
             if (!checkDataStatus("AttackState", AttackState.NONE))
                 return NodeState.FAILURE;
@@ -31,7 +32,7 @@ namespace BehaviorTree
             {
                 //switch to active state
                 case AttackState.START_UP:
-                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted > curAttackData.startUpFrames)
+                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted >= curAttackData.startUpFrames)
                     {
                         removeData("AttackState");
                         root.addData("AttackState", AttackState.ACTIVE);
@@ -40,16 +41,20 @@ namespace BehaviorTree
                     break;
                 //switch to recovery state
                 case AttackState.ACTIVE:
-                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted > curAttackData.startUpFrames + curAttackData.activeFrames)
+                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted >= curAttackData.startUpFrames + curAttackData.activeFrames)
                     {
                         removeData("AttackState"); 
-                        root.addData("AttackState", AttackState.RECOVERY);
+                        root.addData("AttackState", AttackState.RECOVERY);;
+                        if (curAttack.Projectile != null)
+                        {
+                            curAttack.Projectile.spawnProjectile(1, GameManager.Instance.GetCurrentFrame);
+                        }
                         curAttack.GetHitbox.SetActive(false);
                     }
                     break;
                 //switch to no attack state (remove CurrentAttackData)
                 case AttackState.RECOVERY:
-                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted > curAttackData.startUpFrames + curAttackData.activeFrames + curAttackData.recoveryFrames)
+                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted >= curAttackData.startUpFrames + curAttackData.activeFrames + curAttackData.recoveryFrames)
                     {
                         removeData("AttackState");
                         root.addData("AttackState", AttackState.NONE);

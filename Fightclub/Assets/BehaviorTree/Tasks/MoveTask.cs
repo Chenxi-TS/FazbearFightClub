@@ -23,7 +23,7 @@ namespace BehaviorTree
 
         public override NodeState Evaluate()
         {
-            //Debug.Log("move task reached " + moveName);
+            Debug.Log("move task reached " + moveName);
             if (findData("Speed") == null)
             {
                 Debug.LogWarning("Speed data not found");

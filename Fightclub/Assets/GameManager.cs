@@ -9,10 +9,14 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public int updateEveryFPS = 60;
+    float updateInterval;
+
     public List<GameObject> characters = new List<GameObject>();
     BehaviorTree.Tree firstPlayer;
     BehaviorTree.Tree secondPlayer;
 
+    [SerializeField]
     int currentFrame = 0;
     public int GetCurrentFrame { get { return currentFrame; } }
 
@@ -24,7 +28,7 @@ public class GameManager : MonoBehaviour
     InputHandler player2InputHandler;
     private void Awake()
     {
-        Application.targetFrameRate = 60;
+        updateInterval = 1 / updateEveryFPS;
         if (Instance != null && Instance != this)
             DestroyImmediate(Instance);
         else if (Instance == null)
@@ -32,13 +36,17 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        firstPlayer.Evaluate();
+        if(player1InputHandler != null)
+            player1InputHandler.ReadInput();
+        if (player2InputHandler != null)
+            player2InputHandler.ReadInput();
     }
     private void Start()
     {
         StartRound();
+        StartRound();
     }
-    void StartRound()
+    void StartRound(/*int player1charNum, int player2charNum*/)
     {
         if(gaming)
         {
@@ -47,7 +55,8 @@ public class GameManager : MonoBehaviour
         }
         gaming = true;
         //make trees here
-        firstPlayer = new Char_01_Tree(1);
+        //firstPlayer = new Char_01_Tree(1, characterID);
+        firstPlayer = new Char_01_Tree(1, 0);
         StartCoroutine(RoundTimer(roundDuration));
         StartCoroutine(FrameUpdate());
     }
@@ -76,15 +85,15 @@ public class GameManager : MonoBehaviour
     {
         while(gaming)
         {
-            if (player1InputHandler == null)
+            if (firstPlayer == null)
             {
                 yield break;
             }
-            player1InputHandler.ReadInput();
-            if(player2InputHandler != null)
-                player2InputHandler.ReadInput();
-            yield return new WaitForEndOfFrame();
+            firstPlayer.Evaluate();
+            if(secondPlayer != null)
+                secondPlayer.Evaluate();
             currentFrame++;
+            yield return new WaitForSeconds(updateInterval);
         }
         Debug.Log("Round Ended");
     }
