@@ -33,8 +33,8 @@ namespace BehaviorTree
             //Gets all inputs performed by player starting from the numbers of bufferframes back to current frame
             //check for required inputNotations within that time
             string[] inputNotationsArray = inputNotations.Split(",");
-            if(bufferFrames < inputNotationsArray.Length)
-                bufferFrames = inputNotationsArray.Length;
+            if(bufferFrames < inputNotationsArray.Length - 1)
+                bufferFrames = inputNotationsArray.Length - 1;
             Dictionary<int, List<string>> actionsWithinBuffer = masterTree.getQueuedActions(bufferFrames, GameManager.Instance.GetCurrentFrame);
             
             if (actionsWithinBuffer == null)
@@ -47,7 +47,6 @@ namespace BehaviorTree
                 return childrenNodes[0].Evaluate();
             else
             {
-                Debug.Log(requiredInputsFound);
                 return NodeState.FAILURE;
             }
         }

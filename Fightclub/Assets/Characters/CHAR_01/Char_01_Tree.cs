@@ -80,11 +80,13 @@ namespace BehaviorTree
                 new UpdateHitTask(),
                 new UpdateAttackStateTask(), 
                 //Crouch
-                new CheckGroundStateDecorator(GroundState.GROUNDED,
-                    new CheckQueueDecorator(new List<Node>{ crouching}, this, CROUCHING.inputNotations, 0, "crouch")),
-                //Uncrouch
-                new CheckGroundStateDecorator(GroundState.CROUCHING,
-                    new CheckQueueDecorator(new List<Node>{ uncroucing}, this, UNCROUCHING.inputNotations, 0, "uncrouch")),
+                new Selector(new List<Node> {
+                    new CheckGroundStateDecorator(GroundState.GROUNDED,
+                        new CheckQueueDecorator(new List<Node>{ crouching}, this, CROUCHING.inputNotations, 0, "crouch")),
+                    //Uncrouch
+                    new CheckGroundStateDecorator(GroundState.CROUCHING,
+                        new CheckQueueDecorator(new List<Node>{ uncroucing}, this, UNCROUCHING.inputNotations, 0, "uncrouch"))
+                }),
                 //Movements & Attacks
                 new Selector(new List<Node>
                 {

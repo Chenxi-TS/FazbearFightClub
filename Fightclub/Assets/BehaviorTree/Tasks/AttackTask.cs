@@ -66,7 +66,7 @@ namespace BehaviorTree
                 return NodeState.FAILURE;
             }
             if (currentAttackState == AttackState.NONE && prereqMove == null)
-                performAttack();
+                performAttack((GroundState)findData("GroundState"));
 
             //Checks if this move can be interupt current move
             //-> checks if this move has a prereqMove
@@ -88,16 +88,16 @@ namespace BehaviorTree
                 {
                     case < MoveData.MoveType.COMMAND:
                         if (moveData.type > currentAttackType)
-                            performAttack();
+                            performAttack((GroundState)findData("GroundState"));
                         break;
                     case MoveData.MoveType.COMMAND:
                         if (moveData.type >= MoveData.MoveType.SPECIAL)
-                            performAttack();
+                            performAttack((GroundState)findData("GroundState"));
                         break;
                     case MoveData.MoveType.SPECIAL:
                         if (moveData.type >= MoveData.MoveType.SUPER)
                         {
-                            performAttack();
+                            performAttack((GroundState)findData("GroundState"));
                         }
                         else if (currentAttackData.GetMoveData.specialCancelables.Count > 0)
                         {
@@ -106,7 +106,7 @@ namespace BehaviorTree
                                 if (specials.type != MoveData.MoveType.SPECIAL)
                                     Debug.LogError(currentAttackData.GetMoveData.moveName + " has " + specials.moveName + " in specialCancelables and is not a special");
                                 if (specials.moveName == moveData.moveName)
-                                    performAttack();
+                                    performAttack((GroundState)findData("GroundState"));
                             }
                         }
                         break;
@@ -115,7 +115,7 @@ namespace BehaviorTree
             return NodeState.FAILURE;
         }
 
-        NodeState performAttack()
+        NodeState performAttack(GroundState groundState)
         {
             Debug.Log("AttackTask performed: " + moveData.moveName);
             //play animation, spawn hitboxes, add currentAttack
@@ -125,7 +125,8 @@ namespace BehaviorTree
                 Debug.Log("GameManagerNULL");
             else if (moveData == null)
                 Debug.Log("moveDataNULL");
-            rb.velocity = new Vector3 (0, rb.velocity.y, 0);
+            if(groundState != GroundState.AIRBORNE)
+                rb.velocity = new Vector3 (0, rb.velocity.y, 0);
             if (moveData.projectile != null)
             {
                 GameObject projectileClone = MonoBehaviour.Instantiate(moveData.projectile);

@@ -5,6 +5,9 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
+//Responsible for keeping track of what frame it currently is in a game round and calling InputHandler.ReadInput() for each player
+//StartRound() -> starts game round
+//SetPlayerHandler -> connects character InputHandlers to be read in Update()
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     InputHandler player1InputHandler;
     InputHandler player2InputHandler;
+
     private void Awake()
     {
         updateInterval = 1 / updateEveryFPS;
@@ -43,10 +47,11 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        StartRound();
-        StartRound();
+        StartRound(0); //temp for testing call this wherever players choose their characters
     }
-    void StartRound(/*int player1charNum, int player2charNum*/)
+
+    //Starts round with 2 player setting up each player's character tree...
+    public void StartRound(int p1CharacterID, int p2CharacterID)
     {
         if(gaming)
         {
@@ -55,11 +60,39 @@ public class GameManager : MonoBehaviour
         }
         gaming = true;
         //make trees here
-        //firstPlayer = new Char_01_Tree(1, characterID);
-        firstPlayer = new Char_01_Tree(1, 0);
+        firstPlayer = constructCharacterTree(1, p1CharacterID);
+        secondPlayer = constructCharacterTree(2, p2CharacterID);
         StartCoroutine(RoundTimer(roundDuration));
         StartCoroutine(FrameUpdate());
     }
+    //...or start with 1 player
+    public void StartRound(int p1CharacterID)
+    {
+        if (gaming)
+        {
+            Debug.Log("Already gaming");
+            return;
+        }
+        gaming = true;
+        //make trees here
+        firstPlayer = constructCharacterTree(1, p1CharacterID);
+        StartCoroutine(RoundTimer(roundDuration));
+        StartCoroutine(FrameUpdate());
+    }
+    //returns different character trees base on characterID, 
+    //same as GameObject stored in List<GameObject> characters
+    BehaviorTree.Tree constructCharacterTree(int slot ,int characterID)
+    {
+        switch (characterID) 
+        {
+            case 0:
+                return new Char_01_Tree(slot, characterID);
+            default:
+                return null;
+        }
+    }
+
+    //Called during character tree construtor
     public void SetPlayerHandler(int playerSlotNumber, InputHandler inputHandler)
     {
         if(playerSlotNumber == 1)
@@ -92,8 +125,14 @@ public class GameManager : MonoBehaviour
             firstPlayer.Evaluate();
             if(secondPlayer != null)
                 secondPlayer.Evaluate();
-            currentFrame++;
-            yield return new WaitForSeconds(updateInterval);
+            currentFrame++; 
+            float frameTime = 1f / 60f;
+            float startTime = Time.time;
+            // This loop waits until it's time to proceed to the next frame.
+            while (Time.time < startTime + frameTime)
+            {
+                yield return null; // This yields for one frame.
+            }
         }
         Debug.Log("Round Ended");
     }

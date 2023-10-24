@@ -18,11 +18,13 @@ namespace BehaviorTree
     }
     public enum AttackState
     {
+        //Attacking
         NONE,
         START_UP,
         ACTIVE,
         RECOVERY,
-        HIT_STUN, //move these to a enum later
+        //Enemy got hands
+        HIT_STUN, 
         HIT_STUN_RECOVERY,
         KNOCK_DOWN,
         HARD_KNOCK_DOWN,
