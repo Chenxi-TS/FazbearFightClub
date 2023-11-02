@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609750b2b945ad47bd00c0ac6e3a8a4, type: 3}
+  m_Name: Elbow Wave
+  m_EditorClassIdentifier: 
+  moveName: Elbow Wave
+  type: 2
+  inputNotations: H
+  damage: 5
+  hitType: 0
+  blockDamage: 2
+  startUpFrames: 6
+  activeFrames: 7
+  recoveryFrames: 0
+  hitAdvantage: 0
+  blockAdvantage: 0
+  powerType: 0
+  specialCancelable: 0
+  nameOfSpecialThatCancelsThisMove: 
+  moveAnimation: {fileID: 0}
+  hitbox: {fileID: 0}

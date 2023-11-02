@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609750b2b945ad47bd00c0ac6e3a8a4, type: 3}
+  m_Name: Downward Mic
+  m_EditorClassIdentifier: 
+  moveName: Downward Mic
+  type: 2
+  inputNotations: M
+  damage: 9
+  hitType: 0
+  blockDamage: 2.5
+  startUpFrames: 7
+  activeFrames: 4
+  recoveryFrames: 10
+  hitAdvantage: 9
+  blockAdvantage: 0
+  powerType: 0
+  specialCancelables: []
+  moveAnimation: {fileID: 0}
+  hitbox: {fileID: 950732647047880832, guid: 6dd2251c2a34054429941aab0636ffa9, type: 3}

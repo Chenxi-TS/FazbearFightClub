@@ -1,25 +1,45 @@
 m_ProjectFiles:
   m_ManifestFileStatus:
+<<<<<<< HEAD
     m_FilePath: C:/Users/4camd/OneDrive - Clark University/Documents/GitHub/FazbearFightClub/Fightclub/Packages/manifest.json
+=======
+    m_FilePath: D:/FazbearFightClub/Fightclub/Packages/manifest.json
+>>>>>>> main
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
+<<<<<<< HEAD
       ticks: 638327427613366533
     m_Hash: 2032238756
   m_LockFileStatus:
     m_FilePath: C:/Users/4camd/OneDrive - Clark University/Documents/GitHub/FazbearFightClub/Fightclub/Packages/packages-lock.json
+=======
+      ticks: 638327296045269258
+    m_Hash: 2026101946
+  m_LockFileStatus:
+    m_FilePath: D:/FazbearFightClub/Fightclub/Packages/packages-lock.json
+>>>>>>> main
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
+<<<<<<< HEAD
       ticks: 638327427613366533
     m_Hash: 2831165124
+=======
+      ticks: 638327296045304343
+    m_Hash: 680055695
+>>>>>>> main
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
   m_LocalFileStatus: []
+<<<<<<< HEAD
 m_ProjectPath: C:/Users/4camd/OneDrive - Clark University/Documents/GitHub/FazbearFightClub/Fightclub/Packages
+=======
+m_ProjectPath: D:/FazbearFightClub/Fightclub/Packages
+>>>>>>> main
 m_EditorVersion: 2022.2.13f1 (5f5de2657605)
 m_ResolvedPackages:
 - packageId: com.unity.ide.visualstudio@2.0.18
@@ -27,7 +47,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.18
   source: 1
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.ide.visualstudio@2.0.18
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.ide.visualstudio@2.0.18
+>>>>>>> main
   assetPath: Packages/com.unity.ide.visualstudio
   name: com.unity.ide.visualstudio
   displayName: Visual Studio Editor
@@ -115,12 +139,113 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+- packageId: com.unity.postprocessing@3.2.2
+  testable: 0
+  isDirectDependency: 1
+  version: 3.2.2
+  source: 1
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.postprocessing@3.2.2
+  assetPath: Packages/com.unity.postprocessing
+  name: com.unity.postprocessing
+  displayName: Post Processing
+  author:
+    name: 
+    email: 
+    url: 
+  category: 
+  type: asset
+  description: The post-processing stack (v2) comes with a collection of effects
+    and image filters you can apply to your cameras to improve the visuals of your
+    games.
+  status: 0
+  errors: []
+  versions:
+    all:
+    - 0.1.7
+    - 0.1.8
+    - 2.0.0-beta
+    - 2.0.1-beta
+    - 2.0.2-preview
+    - 2.0.3-preview
+    - 2.0.5-preview
+    - 2.0.7-preview
+    - 2.0.8-preview
+    - 2.0.9-preview
+    - 2.0.10-preview
+    - 2.0.11-preview
+    - 2.0.12-preview
+    - 2.0.13-preview
+    - 2.0.14-preview
+    - 2.0.15-preview
+    - 2.0.16-preview
+    - 2.0.17-preview
+    - 2.1.0
+    - 2.1.1
+    - 2.1.2
+    - 2.1.3
+    - 2.1.4
+    - 2.1.5
+    - 2.1.6
+    - 2.1.7
+    - 2.2.1
+    - 2.2.2
+    - 2.3.0
+    - 3.0.1
+    - 3.0.3
+    - 3.1.0
+    - 3.1.1
+    - 3.2.0
+    - 3.2.1
+    - 3.2.2
+    - 3.3.0
+    compatible:
+    - 3.2.2
+    - 3.3.0
+    recommended: 3.2.2
+    deprecated: []
+  dependencies:
+  - name: com.unity.modules.physics
+    version: 1.0.0
+  resolvedDependencies:
+  - name: com.unity.modules.physics
+    version: 1.0.0
+  keywords: []
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+  hideInEditor: 0
+  isAssetStorePackage: 0
+  datePublishedTicks: 637855259850000000
+  documentationUrl: 
+  hasRepository: 1
+  repository:
+    type: git
+    url: https://github.com/Unity-Technologies/Graphics.git
+    revision: 815ce78463c7d3006fa97cd6e8898d91cb9c3ebf
+    path: 
+  unityLifecycle:
+    version: 3.2.2
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
 - packageId: com.unity.modules.ai@1.0.0
   testable: 0
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.ai@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.ai@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.ai
   name: com.unity.modules.ai
   displayName: AI
@@ -175,7 +300,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.androidjni@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.androidjni@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.androidjni
   name: com.unity.modules.androidjni
   displayName: Android JNI
@@ -229,7 +358,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.animation@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.animation@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.animation
   name: com.unity.modules.animation
   displayName: Animation
@@ -284,7 +417,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.assetbundle@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.assetbundle@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.assetbundle
   name: com.unity.modules.assetbundle
   displayName: Asset Bundle
@@ -339,7 +476,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.audio@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.audio@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.audio
   name: com.unity.modules.audio
   displayName: Audio
@@ -394,7 +535,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.cloth@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.cloth@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.cloth
   name: com.unity.modules.cloth
   displayName: Cloth
@@ -453,7 +598,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.director@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.director@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.director
   name: com.unity.modules.director
   displayName: Director
@@ -516,7 +665,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.imageconversion@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.imageconversion@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.imageconversion
   name: com.unity.modules.imageconversion
   displayName: Image Conversion
@@ -572,7 +725,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.imgui@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.imgui@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.imgui
   name: com.unity.modules.imgui
   displayName: IMGUI
@@ -627,7 +784,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.jsonserialize@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.jsonserialize@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.jsonserialize
   name: com.unity.modules.jsonserialize
   displayName: JSONSerialize
@@ -682,7 +843,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.particlesystem@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.particlesystem@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.particlesystem
   name: com.unity.modules.particlesystem
   displayName: Particle System
@@ -737,7 +902,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.physics@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.physics@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.physics
   name: com.unity.modules.physics
   displayName: Physics
@@ -792,7 +961,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.physics2d@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.physics2d@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.physics2d
   name: com.unity.modules.physics2d
   displayName: Physics 2D
@@ -847,7 +1020,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.screencapture@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.screencapture@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.screencapture
   name: com.unity.modules.screencapture
   displayName: Screen Capture
@@ -906,7 +1083,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.terrain@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.terrain@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.terrain
   name: com.unity.modules.terrain
   displayName: Terrain
@@ -961,7 +1142,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.terrainphysics@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.terrainphysics@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.terrainphysics
   name: com.unity.modules.terrainphysics
   displayName: Terrain Physics
@@ -1024,7 +1209,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.tilemap@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.tilemap@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.tilemap
   name: com.unity.modules.tilemap
   displayName: Tilemap
@@ -1082,7 +1271,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.ui@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.ui@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.ui
   name: com.unity.modules.ui
   displayName: UI
@@ -1137,7 +1330,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.uielements@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.uielements@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.uielements
   name: com.unity.modules.uielements
   displayName: UIElements
@@ -1204,7 +1401,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.umbra@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.umbra@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.umbra
   name: com.unity.modules.umbra
   displayName: Umbra
@@ -1259,7 +1460,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unityanalytics@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unityanalytics@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.unityanalytics
   name: com.unity.modules.unityanalytics
   displayName: Unity Analytics
@@ -1322,7 +1527,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequest@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequest@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.unitywebrequest
   name: com.unity.modules.unitywebrequest
   displayName: Unity Web Request
@@ -1377,7 +1586,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.unitywebrequestassetbundle
   name: com.unity.modules.unitywebrequestassetbundle
   displayName: Unity Web Request Asset Bundle
@@ -1440,7 +1653,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequestaudio@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequestaudio@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.unitywebrequestaudio
   name: com.unity.modules.unitywebrequestaudio
   displayName: Unity Web Request Audio
@@ -1503,7 +1720,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequesttexture@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequesttexture@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.unitywebrequesttexture
   name: com.unity.modules.unitywebrequesttexture
   displayName: Unity Web Request Texture
@@ -1566,7 +1787,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequestwww@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.unitywebrequestwww@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.unitywebrequestwww
   name: com.unity.modules.unitywebrequestwww
   displayName: Unity Web Request WWW
@@ -1645,7 +1870,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.vehicles@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.vehicles@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.vehicles
   name: com.unity.modules.vehicles
   displayName: Vehicles
@@ -1704,7 +1933,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.video@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.video@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.video
   name: com.unity.modules.video
   displayName: Video
@@ -1771,7 +2004,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.vr@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.vr@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.vr
   name: com.unity.modules.vr
   displayName: VR
@@ -1840,7 +2077,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.wind@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.wind@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.wind
   name: com.unity.modules.wind
   displayName: Wind
@@ -1895,7 +2136,11 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.xr@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.xr@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.xr
   name: com.unity.modules.xr
   displayName: XR
@@ -1962,7 +2207,11 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.subsystems@1.0.0
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.modules.subsystems@1.0.0
+>>>>>>> main
   assetPath: Packages/com.unity.modules.subsystems
   name: com.unity.modules.subsystems
   displayName: Subsystems
@@ -2021,7 +2270,11 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.1.33
   source: 1
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.test-framework@1.1.33
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.test-framework@1.1.33
+>>>>>>> main
   assetPath: Packages/com.unity.test-framework
   name: com.unity.test-framework
   displayName: Test Framework
@@ -2148,7 +2401,11 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.6
   source: 1
+<<<<<<< HEAD
   resolvedPath: C:\Users\4camd\OneDrive - Clark University\Documents\GitHub\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.ext.nunit@1.0.6
+=======
+  resolvedPath: D:\FazbearFightClub\Fightclub\Library\PackageCache\com.unity.ext.nunit@1.0.6
+>>>>>>> main
   assetPath: Packages/com.unity.ext.nunit
   name: com.unity.ext.nunit
   displayName: Custom NUnit

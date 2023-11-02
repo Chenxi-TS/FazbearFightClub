@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609750b2b945ad47bd00c0ac6e3a8a4, type: 3}
+  m_Name: Speak Into the Mic
+  m_EditorClassIdentifier: 
+  moveName: Speak Into the Mic
+  type: 2
+  inputNotations: M
+  damage: 85
+  hitType: 2
+  blockDamage: 2.5
+  startUpFrames: 5
+  activeFrames: 6
+  recoveryFrames: 3
+  hitAdvantage: 9
+  blockAdvantage: 1
+  powerType: 1
+  specialCancelables: []
+  moveAnimation: {fileID: 0}
+  hitbox: {fileID: 5022021272024123820, guid: fa7121d3e709b884cb4129f65919b768, type: 3}
