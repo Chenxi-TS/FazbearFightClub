@@ -27,3 +27,5 @@ MonoBehaviour:
   specialCancelables: []
   moveAnimation: {fileID: 7400000, guid: e4975af0b8f04b64b90fc5ba69032edd, type: 2}
   hitbox: {fileID: 8673233326130374880, guid: a95893015f675f54fae226779162225d, type: 3}
+  projectile: {fileID: 0}
+  projectileFirePoint: {fileID: 0}

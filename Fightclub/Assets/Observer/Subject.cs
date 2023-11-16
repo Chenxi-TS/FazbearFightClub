@@ -5,11 +5,11 @@ using UnityEngine;
 public class Subject
 {
     List<Observer> observers = new List<Observer>();
-    protected void OnNotify(string eventKey)
+    protected void OnNotify(object value)
     {
         foreach(Observer obser in observers)
         {
-            obser.OnNotify(eventKey);
+            obser.OnNotify(value);
         }
     }
     public void AddObserver(Observer newObserver)

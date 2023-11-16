@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: PawPunch
   type: 1
-  inputNotations: L
+  inputNotations: Ld
   damage: 3
   hitType: 1
   blockDamage: 0.5
   startUpFrames: 3
   activeFrames: 4
-  recoveryFrames: 3
+  recoveryFrames: 5
   hitAdvantage: 7
   blockAdvantage: -1
   powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 7400000, guid: 90a7c629af9f83d47ad88ef9750073d8, type: 2}
+  moveAnimation: {fileID: 3175063194922123489, guid: 859d9a382e622ca4f8b8ddb60f7c8c2f, type: 3}
   hitbox: {fileID: 3430653037965402917, guid: aeba5729e93c89d4e96cd3e176cab5cd, type: 3}
+  projectile: {fileID: 0}
+  projectileFirePoint: {fileID: 0}

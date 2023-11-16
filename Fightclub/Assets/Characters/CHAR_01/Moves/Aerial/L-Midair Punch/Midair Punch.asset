@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Midair Punch
   type: 1
-  inputNotations: L
+  inputNotations: Ld
   damage: 3
   hitType: 0
   blockDamage: 0.5

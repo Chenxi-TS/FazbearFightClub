@@ -21,6 +21,7 @@ namespace BehaviorTree
         }
         public override NodeState Evaluate()
         {
+            Debug.Log("JUMP TASK REACHED");
             root = findRoot();
 
             if (findData("StartUpJump") == null)

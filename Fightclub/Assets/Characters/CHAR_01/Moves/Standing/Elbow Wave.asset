@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Elbow Wave
   type: 2
-  inputNotations: H
+  inputNotations: Hd
   damage: 5
   hitType: 0
   blockDamage: 2
@@ -24,7 +24,6 @@ MonoBehaviour:
   hitAdvantage: 0
   blockAdvantage: 0
   powerType: 0
-  specialCancelable: 0
-  nameOfSpecialThatCancelsThisMove: 
+  specialCancelables: []
   moveAnimation: {fileID: 0}
   hitbox: {fileID: 0}

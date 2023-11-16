@@ -40,6 +40,7 @@ namespace BehaviorTree
                     currentJumpData = (CurrentJumpData)findData("StartUpJump"); 
                     if (GameManager.Instance.GetCurrentFrame - currentJumpData.startFrame > currentJumpData.startUp)
                     {
+                        rb.AddForce(currentJumpData.force * new Vector3(currentJumpData.direction * .5f, 1, 0), ForceMode.Impulse);
                         rb.velocity = new Vector3(currentJumpData.direction * .5f, 1, 0) * currentJumpData.force;
                         removeData("GroundState");
                         root.addData("GroundState", GroundState.START_UP);

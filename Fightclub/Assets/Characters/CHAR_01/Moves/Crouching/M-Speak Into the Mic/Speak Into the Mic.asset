@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Speak Into the Mic
   type: 2
-  inputNotations: M
+  inputNotations: Md
   damage: 85
   hitType: 2
   blockDamage: 2.5

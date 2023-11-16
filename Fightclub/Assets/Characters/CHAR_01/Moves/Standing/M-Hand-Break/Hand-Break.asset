@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Hand-Break
   type: 2
-  inputNotations: M
+  inputNotations: Md
   damage: 7
   hitType: 1
   blockDamage: 2
@@ -25,5 +25,7 @@ MonoBehaviour:
   blockAdvantage: -2
   powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 7400000, guid: f1d11ee28b35d764c9f446e8b386dde1, type: 2}
+  moveAnimation: {fileID: 6493312403489706959, guid: 859d9a382e622ca4f8b8ddb60f7c8c2f, type: 3}
   hitbox: {fileID: 1312826613937417264, guid: 920e2769a9fad0c42a781476266b0639, type: 3}
+  projectile: {fileID: 0}
+  projectileFirePoint: {fileID: 0}

@@ -1,41 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace BehaviorTree
 {
     public class AttackTask : Node
-    {
+    {   
+        Tree masterTree;
+        Rigidbody rb;
+
         MoveData moveData;
         MoveData prereqMove = null;
-        Tree masterTree;
+
         GameObject hitbox;
-        public AttackTask (MoveData moveData, Tree masterTree, Transform transform)
+        GameObject projectileClone;
+        Projectile projectile;
+        public AttackTask (MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform)
         {
             this.moveData = moveData;
             this.masterTree = masterTree;
+            this.rb = rb;
+            //move hitbox spawn
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
             hitbox.transform.localPosition = Vector3.zero;
             hitbox.SetActive(false);
+            hitbox.GetComponentInChildren<hitBox>().setUser(findRoot());
+            //projectile spawn
+            if (moveData.projectile != null)
+            {
+                projectileClone = MonoBehaviour.Instantiate(moveData.projectile);
+                projectileClone.transform.SetParent(transform);
+                projectileClone.SetActive(false);
+                projectileClone.GetComponent<hitBox>().setUser(findRoot());
+                projectileClone.transform.SetParent(null);
+            }
         }
         //If this move is a Rekka (follow up move/multi hit move),
         //specify the prerequisite move
-        public AttackTask(MoveData moveData, Tree masterTree, Transform transform, MoveData prereqMove)
+        public AttackTask(MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform, MoveData prereqMove)
         {
             this.moveData = moveData;
             this.masterTree = masterTree;
+            this.rb = rb;
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
             hitbox.transform.localPosition = Vector3.zero;
             hitbox.SetActive(false);
+            hitbox.GetComponentInChildren<hitBox>().setUser(findRoot());
             this.prereqMove = prereqMove;
         }
 
         public override NodeState Evaluate()
         {
-            Debug.Log("AttackState reached " + moveData.moveName);
             if (root == null)
                 root = findRoot();
             //Checking status of "AttackState"
@@ -57,13 +76,13 @@ namespace BehaviorTree
             //-> FAILURE if current attack is not the prerequisite move
             //-> perform attack if no move is being performed currently
             AttackState currentAttackState = (AttackState)findData("AttackState");
-            if (currentAttackState >= AttackState.HIT_STUN)
+            if (currentAttackState >= AttackState.HIT_STUN_RECOVERY)
             {
                 Debug.Log("Recovering from hit");
                 return NodeState.FAILURE;
             }
             if (currentAttackState == AttackState.NONE && prereqMove == null)
-                performAttack();
+                performAttack((GroundState)findData("GroundState"));
 
             //Checks if this move can be interupt current move
             //-> checks if this move has a prereqMove
@@ -85,16 +104,19 @@ namespace BehaviorTree
                 {
                     case < MoveData.MoveType.COMMAND:
                         if (moveData.type > currentAttackType)
-                            performAttack();
+                        {
+                            Debug.Log("CANCEL? " + moveData.type + " vs. " + currentAttackType);
+                            performAttack((GroundState)findData("GroundState"));
+                        }
                         break;
                     case MoveData.MoveType.COMMAND:
                         if (moveData.type >= MoveData.MoveType.SPECIAL)
-                            performAttack();
+                            performAttack((GroundState)findData("GroundState"));
                         break;
                     case MoveData.MoveType.SPECIAL:
                         if (moveData.type >= MoveData.MoveType.SUPER)
                         {
-                            performAttack();
+                            performAttack((GroundState)findData("GroundState"));
                         }
                         else if (currentAttackData.GetMoveData.specialCancelables.Count > 0)
                         {
@@ -103,7 +125,7 @@ namespace BehaviorTree
                                 if (specials.type != MoveData.MoveType.SPECIAL)
                                     Debug.LogError(currentAttackData.GetMoveData.moveName + " has " + specials.moveName + " in specialCancelables and is not a special");
                                 if (specials.moveName == moveData.moveName)
-                                    performAttack();
+                                    performAttack((GroundState)findData("GroundState"));
                             }
                         }
                         break;
@@ -112,9 +134,9 @@ namespace BehaviorTree
             return NodeState.FAILURE;
         }
 
-        NodeState performAttack()
+        NodeState performAttack(GroundState groundState)
         {
-            Debug.Log("AttackTask performed: " + moveData.moveName);
+            //Debug.Log("AttackTask performed: " + moveData.moveName);
             //play animation, spawn hitboxes, add currentAttack
             removeData("CurrentAttack");
 
@@ -122,8 +144,25 @@ namespace BehaviorTree
                 Debug.Log("GameManagerNULL");
             else if (moveData == null)
                 Debug.Log("moveDataNULL");
+            
+            if(groundState != GroundState.AIRBORNE)
+                rb.velocity = new Vector3 (0, rb.velocity.y, 0);
 
-            root.addData("CurrentAttack", new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox));
+            if (moveData.projectile != null)
+            {
+                if (projectileClone.activeSelf == true)
+                    return NodeState.FAILURE;
+                projectile = projectileClone.GetComponent<Projectile>();
+                projectile.setSpawn(GameManager.Instance.characters[masterTree.getcharacterID].GetComponent<MoveListHolder>().projectileFirePoints[projectile.firePointNum]);
+            }
+
+            root.addData("CurrentAttack", new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox, projectile));
+            Debug.Log("MOVE PERFORMED " + moveData.name + " " + GameManager.Instance.GetCurrentFrame);
+            if (moveData.projectile != null)
+                projectile.GetComponent<hitBox>().setAttackData((CurrentAttackData)findData("CurrentAttack"));
+            else
+                hitbox.GetComponentInChildren<hitBox>().setAttackData((CurrentAttackData)findData("CurrentAttack"));
+
             removeData("AttackState");
             root.addData("AttackState", AttackState.START_UP);
             masterTree.playAnimation(moveData.moveAnimation);

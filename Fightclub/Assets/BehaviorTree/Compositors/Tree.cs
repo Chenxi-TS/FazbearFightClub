@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 namespace BehaviorTree
 {
@@ -18,11 +20,12 @@ namespace BehaviorTree
     }
     public enum AttackState
     {
+        //Attacking
         NONE,
         START_UP,
         ACTIVE,
         RECOVERY,
-        HIT_STUN, //move these to a enum later
+        //damn the enemy got hands
         HIT_STUN_RECOVERY,
         KNOCK_DOWN,
         HARD_KNOCK_DOWN,
@@ -38,6 +41,8 @@ namespace BehaviorTree
     public class Tree : Node, Observer
     {
         public List<MoveData> allMoves;
+        protected int characterID;
+        public int getcharacterID { get { return characterID; } }
 
         protected Rigidbody rb;
         protected Transform transform;
@@ -46,8 +51,9 @@ namespace BehaviorTree
         protected Dictionary<KeyCode, Command> characterMoveList = new Dictionary<KeyCode, Command>();
         protected Dictionary<int, List<string>> queuedActions = new Dictionary<int, List<string>>();
 
-        public Tree(int playerSlotNumber)
+        public Tree(int playerSlotNumber, int characterID)
         {
+            this.characterID = characterID;
             characterMoveList.Clear();
             //movement
             JumpCommand jump = new JumpCommand();
@@ -89,29 +95,32 @@ namespace BehaviorTree
             InputHandler inputManager = new InputHandler(this, characterMoveList);
             GameManager.Instance.SetPlayerHandler(playerSlotNumber, inputManager);
         }
-        public virtual List<string> getQueuedActions(int numberOfFramesBack, int currentFrame)
+        public virtual void Evaluate() { }
+        public virtual Dictionary<int,List<string>> getQueuedActions(int numberOfFramesBack, int currentFrame)
         {
-            List<string> allQueuedActions = new List<string>();
+            Dictionary<int, List<string>> allQueuedActions = new Dictionary<int, List<string>>();
             if (currentFrame - numberOfFramesBack < 0)
             {
                 return null;
-            }
-            if (numberOfFramesBack == 0)
-            {
-                if (queuedActions.ContainsKey(currentFrame))
-                {
-                    foreach (string s in queuedActions[currentFrame])
-                        allQueuedActions.Add(s);
-
-                    return allQueuedActions;
-                }
             }
             for (int i = currentFrame - numberOfFramesBack; i <= currentFrame; i++)
             {
                 if (queuedActions.ContainsKey(i))
                 {
-                    foreach(string s in queuedActions[i])
-                        allQueuedActions.Add(s);
+                    foreach (string s in queuedActions[i])
+                    {
+                        string[] stringArray = s.Split(",");
+                        foreach (string sa in stringArray)
+                        {
+                            if (allQueuedActions.ContainsKey(i))
+                                allQueuedActions[i].Add(sa);
+                            else
+                            {
+                                allQueuedActions.Add(i, new List<string>()); 
+                                allQueuedActions[i].Add(sa);
+                            }
+                        }
+                    }
                 }
             }
             return allQueuedActions;
@@ -128,9 +137,14 @@ namespace BehaviorTree
             }
             catch (Exception e)
             {
+                Debug.Log("NOT PLAYING ANIMATION");
                 Debug.LogException(e);
                 return;
             }
+        }
+        public void resetAnimation()
+        {
+            animator.Rebind();
         }
         protected void readCommands(string eventKey)
         {
@@ -158,6 +172,38 @@ namespace BehaviorTree
                 queuedActions[curFrame].Add(eventKey);
             }
             //Debug.Log("queued action " + eventKey + " on frame " + curFrame);
+        }
+        protected void gotHit(CurrentAttackData attackData)
+        {
+            int curFrame = GameManager.Instance.GetCurrentFrame;
+            if (queuedActions.ContainsKey(curFrame))
+            {
+                queuedActions[curFrame].Add("GOT HIT");
+            }
+            else
+            {
+                List<string> gotHitAction = new List<string>();
+                gotHitAction.Add("GOT HIT");
+                queuedActions.Add(curFrame, gotHitAction);
+            }
+            root.removeData("EnemyAttackData");
+            root.addData("EnemyAttackData", attackData);
+            root.removeData("AttackState");
+            switch (attackData.GetMoveData.powerType)
+            {
+                case MoveData.PowerType.NORMAL:
+                    root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
+                    break;
+                case MoveData.PowerType.KNOCK_DOWN:
+                    root.addData("AttackState", AttackState.KNOCK_DOWN);
+                    break;
+                case MoveData.PowerType.HARD_KNOCK_DOWN:
+                    root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
+                    break;
+            }
+            Debug.Log("GOT HIT " + transform.name + " " + curFrame);
+            rb.velocity = Vector3.zero;
+            //GameManager.Instance.hitStop(.1f);
         }
         string checkForDiagonals(string currentKey, string exisitingKey)
         {
@@ -202,7 +248,10 @@ namespace BehaviorTree
             else if (down && left)
                 return "1";
             else if (down & right)
+            {
+                Debug.Log("RETURNS 3");
                 return "3";
+            }
             return currentKey;
         }
     }

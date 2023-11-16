@@ -3,16 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.PlayerLoop;
 
+//Responsible for keeping track of what frame it currently is in a game round and calling InputHandler.ReadInput() for each player
+//StartRound() -> starts game round
+//SetPlayerHandler -> connects character InputHandlers to be read in Update()
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    public int updateEveryFPS = 60;
+    float updateInterval;
 
     public List<GameObject> characters = new List<GameObject>();
     BehaviorTree.Tree firstPlayer;
     BehaviorTree.Tree secondPlayer;
 
+    [SerializeField]
     int currentFrame = 0;
     public int GetCurrentFrame { get { return currentFrame; } }
 
@@ -22,9 +30,13 @@ public class GameManager : MonoBehaviour
 
     InputHandler player1InputHandler;
     InputHandler player2InputHandler;
+
+    Coroutine hitTimeCoroutine;
+
     private void Awake()
     {
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 120;
+        updateInterval = 1 / updateEveryFPS;
         if (Instance != null && Instance != this)
             DestroyImmediate(Instance);
         else if (Instance == null)
@@ -32,13 +44,18 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        firstPlayer.Evaluate();
+        if(player1InputHandler != null)
+            player1InputHandler.ReadInput();
+        if (player2InputHandler != null)
+            player2InputHandler.ReadInput();
     }
     private void Start()
     {
-        StartRound();
+        StartRound(0, 1); //temp for testing call this wherever players choose their characters
     }
-    void StartRound()
+
+    //Starts round with 2 player setting up each player's character tree...
+    public void StartRound(int p1CharacterID, int p2CharacterID)
     {
         if(gaming)
         {
@@ -47,10 +64,42 @@ public class GameManager : MonoBehaviour
         }
         gaming = true;
         //make trees here
-        firstPlayer = new Char_01_Tree(1);
+        firstPlayer = constructCharacterTree(1, p1CharacterID);
+        secondPlayer = constructCharacterTree(2, p2CharacterID);
         StartCoroutine(RoundTimer(roundDuration));
         StartCoroutine(FrameUpdate());
     }
+    //...or start with 1 player
+    public void StartRound(int p1CharacterID)
+    {
+        if (gaming)
+        {
+            Debug.Log("Already gaming");
+            return;
+        }
+        gaming = true;
+        //make trees here
+        firstPlayer = constructCharacterTree(1, p1CharacterID);
+        StartCoroutine(RoundTimer(roundDuration));
+        StartCoroutine(FrameUpdate());
+    }
+    //returns different character trees base on characterID, 
+    //same as GameObject stored in List<GameObject> characters
+    BehaviorTree.Tree constructCharacterTree(int slot ,int characterID)
+    {
+        switch (characterID) 
+        {
+            case 0:
+                return new Char_01_Tree(slot, characterID);
+            case 1:
+                return new Char_01_Tree(slot, characterID);
+            default:
+                Debug.LogWarning(characterID + " TREE CONSTRUCTION NOT SET UP");
+                return null;
+        }
+    }
+
+    //Called during character tree construtor
     public void SetPlayerHandler(int playerSlotNumber, InputHandler inputHandler)
     {
         if(playerSlotNumber == 1)
@@ -76,15 +125,21 @@ public class GameManager : MonoBehaviour
     {
         while(gaming)
         {
-            if (player1InputHandler == null)
+            if (firstPlayer == null)
             {
                 yield break;
             }
-            player1InputHandler.ReadInput();
-            if(player2InputHandler != null)
-                player2InputHandler.ReadInput();
-            yield return new WaitForEndOfFrame();
-            currentFrame++;
+            firstPlayer.Evaluate();
+            if(secondPlayer != null)
+                secondPlayer.Evaluate();
+            currentFrame++; 
+            float frameTime = 1f / 60f;
+            float startTime = Time.time;
+            // This loop waits until it's time to proceed to the next frame.
+            while (Time.time < startTime + frameTime)
+            {
+                yield return null; // This yields for one frame.
+            }
         }
         Debug.Log("Round Ended");
     }
@@ -96,4 +151,19 @@ public class GameManager : MonoBehaviour
         currentFrame = 0;
     }
 
+    public void hitStop(float timeStop)
+    {
+        if(hitTimeCoroutine != null)
+        {
+            StopCoroutine(hitTimeCoroutine);
+            hitTimeCoroutine = null;
+        }
+        hitTimeCoroutine = StartCoroutine(hitStun(timeStop));
+    }
+    IEnumerator hitStun(float hitStopTime)
+    {
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(hitStopTime);
+        Time.timeScale = 1;
+    }
 }
