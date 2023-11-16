@@ -13,10 +13,16 @@ public class FreddyMicThrow : Projectile
     protected override void updateProjectile()
     {
         base.updateProjectile();
+        if(GetComponent<Renderer>().isVisible == false)
+        {
+            active = false;
+            gameObject.SetActive(false);
+            Debug.Log("FREDDY PROJECTILE OFF SCREEN");
+        }
         Debug.Log(rb.velocity);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         active = false;
         gameObject.SetActive(false);

@@ -20,13 +20,13 @@ MonoBehaviour:
   blockDamage: 2
   startUpFrames: 6
   activeFrames: 7
-  recoveryFrames: 1
-  hitAdvantage: 0
+  recoveryFrames: 0
+  hitAdvantage: 8
   blockAdvantage: 0
   powerType: 0
   specialCancelables:
   - {fileID: 11400000, guid: db0b91bd1e29275418bc0fba7986d1f6, type: 2}
-  moveAnimation: {fileID: 7400000, guid: 4431236b9a1e96b44add0e16b9ddb1fe, type: 2}
+  moveAnimation: {fileID: -5274577793118707457, guid: 859d9a382e622ca4f8b8ddb60f7c8c2f, type: 3}
   hitbox: {fileID: 2908484240896028646, guid: 3eb5bd4678a4eb248a1a04f7cbafdab3, type: 3}
   projectile: {fileID: 0}
   projectileFirePoint: {fileID: 0}

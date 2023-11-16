@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.PlayerLoop;
 
 //Responsible for keeping track of what frame it currently is in a game round and calling InputHandler.ReadInput() for each player
@@ -30,8 +31,11 @@ public class GameManager : MonoBehaviour
     InputHandler player1InputHandler;
     InputHandler player2InputHandler;
 
+    Coroutine hitTimeCoroutine;
+
     private void Awake()
     {
+        Application.targetFrameRate = 120;
         updateInterval = 1 / updateEveryFPS;
         if (Instance != null && Instance != this)
             DestroyImmediate(Instance);
@@ -47,7 +51,7 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        StartRound(0); //temp for testing call this wherever players choose their characters
+        StartRound(0, 1); //temp for testing call this wherever players choose their characters
     }
 
     //Starts round with 2 player setting up each player's character tree...
@@ -87,7 +91,10 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 return new Char_01_Tree(slot, characterID);
+            case 1:
+                return new Char_01_Tree(slot, characterID);
             default:
+                Debug.LogWarning(characterID + " TREE CONSTRUCTION NOT SET UP");
                 return null;
         }
     }
@@ -144,4 +151,19 @@ public class GameManager : MonoBehaviour
         currentFrame = 0;
     }
 
+    public void hitStop(float timeStop)
+    {
+        if(hitTimeCoroutine != null)
+        {
+            StopCoroutine(hitTimeCoroutine);
+            hitTimeCoroutine = null;
+        }
+        hitTimeCoroutine = StartCoroutine(hitStun(timeStop));
+    }
+    IEnumerator hitStun(float hitStopTime)
+    {
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(hitStopTime);
+        Time.timeScale = 1;
+    }
 }

@@ -19,8 +19,12 @@ namespace BehaviorTree
             transform = rb.transform;
             animator = transform.GetComponent<Animator>();
 
+            MoveListHolder moveListHolder = GameManager.Instance.characters[characterID].GetComponent<MoveListHolder>();
+            moveListHolder.masterTree = this;
+            Debug.Log(this + " TREE");
+
             #region ATTACKS
-            List<MoveData> moveList = GameManager.Instance.characters[characterID].GetComponent<MoveListHolder>().moveList;
+            List<MoveData> moveList = moveListHolder.moveList;
             //Light: Paw Punch
             MoveData PAW_PUNCH = moveList[0];
             AttackTask pawPunch = new AttackTask(PAW_PUNCH, this, rb, transform);
@@ -77,8 +81,8 @@ namespace BehaviorTree
                 new BurstTask(),
                 //Updates
                 new UpdateGroundStateTask(rb, transform),
-                new UpdateHitTask(),
-                new UpdateAttackStateTask(), 
+                new CheckHitQueue(new List<Node>{new UpdateHitTask()}, this),
+                new UpdateAttackStateTask(this), 
                 //Crouch
                 new Selector(new List<Node> {
                     new CheckGroundStateDecorator(GroundState.GROUNDED,
@@ -147,9 +151,12 @@ namespace BehaviorTree
                 })
             });
         }
-        void Observer.OnNotify(string eventKey)
+        void Observer.OnNotify(object value)
         {
-            readCommands(eventKey);
+            if(value is string)
+                readCommands((string)value);
+            if (value is CurrentAttackData)
+                gotHit((CurrentAttackData)value);
         }
         public override void Evaluate()
         {

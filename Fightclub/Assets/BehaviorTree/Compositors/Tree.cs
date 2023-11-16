@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 namespace BehaviorTree
 {
@@ -23,8 +25,7 @@ namespace BehaviorTree
         START_UP,
         ACTIVE,
         RECOVERY,
-        //Enemy got hands
-        HIT_STUN, 
+        //damn the enemy got hands
         HIT_STUN_RECOVERY,
         KNOCK_DOWN,
         HARD_KNOCK_DOWN,
@@ -136,9 +137,14 @@ namespace BehaviorTree
             }
             catch (Exception e)
             {
+                Debug.Log("NOT PLAYING ANIMATION");
                 Debug.LogException(e);
                 return;
             }
+        }
+        public void resetAnimation()
+        {
+            animator.Rebind();
         }
         protected void readCommands(string eventKey)
         {
@@ -166,6 +172,38 @@ namespace BehaviorTree
                 queuedActions[curFrame].Add(eventKey);
             }
             //Debug.Log("queued action " + eventKey + " on frame " + curFrame);
+        }
+        protected void gotHit(CurrentAttackData attackData)
+        {
+            int curFrame = GameManager.Instance.GetCurrentFrame;
+            if (queuedActions.ContainsKey(curFrame))
+            {
+                queuedActions[curFrame].Add("GOT HIT");
+            }
+            else
+            {
+                List<string> gotHitAction = new List<string>();
+                gotHitAction.Add("GOT HIT");
+                queuedActions.Add(curFrame, gotHitAction);
+            }
+            root.removeData("EnemyAttackData");
+            root.addData("EnemyAttackData", attackData);
+            root.removeData("AttackState");
+            switch (attackData.GetMoveData.powerType)
+            {
+                case MoveData.PowerType.NORMAL:
+                    root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
+                    break;
+                case MoveData.PowerType.KNOCK_DOWN:
+                    root.addData("AttackState", AttackState.KNOCK_DOWN);
+                    break;
+                case MoveData.PowerType.HARD_KNOCK_DOWN:
+                    root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
+                    break;
+            }
+            Debug.Log("GOT HIT " + transform.name + " " + curFrame);
+            rb.velocity = Vector3.zero;
+            //GameManager.Instance.hitStop(.1f);
         }
         string checkForDiagonals(string currentKey, string exisitingKey)
         {
