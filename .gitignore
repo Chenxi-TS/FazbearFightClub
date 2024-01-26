@@ -38,3 +38,5 @@ sysinfo.txt
 *.log
 Asterisk Defence/UserSettings/Layouts/default-2022.dwlt
 Asterisk Defence/UserSettings/Layouts/CurrentMaximizeLayout.dwlt
+Fightclub/Library/SourceAssetDB-lock
+Fightclub/Library/Search/transactions.db
