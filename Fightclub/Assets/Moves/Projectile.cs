@@ -13,6 +13,8 @@ public class Projectile : MonoBehaviour
     [SerializeField]
     protected float speed;
 
+    protected BehaviorTree.Tree moveUser;
+
     protected Transform firepoint;
     protected bool active;
     protected int direction;
@@ -23,16 +25,18 @@ public class Projectile : MonoBehaviour
     {
         updateProjectile();
     }
-    public void setSpawn(Transform firepoint)
+    public void setSpawn(Transform firePoint)
     {
-        this.firepoint = firepoint;
+        this.firepoint = firePoint;
     }
-    public virtual void spawnProjectile(int direction, int frameStarted)
+    public virtual void spawnProjectile(int direction, int frameStarted, BehaviorTree.Tree moveUser)
     {
         rb = GetComponent<Rigidbody>();
+        Debug.Log("firepoint",firepoint);
         transform.position = firepoint.position;
         transform.localScale = new Vector3(direction, transform.localScale.y, transform.localScale.z);
         this.frameStarted = frameStarted;
+        this.moveUser = moveUser;
 
         transform.gameObject.SetActive(true);
         Debug.Log(gameObject, this);

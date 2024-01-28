@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class FreddyMicThrow : Projectile
 {
-    public override void spawnProjectile(int direction, int frameStarted)
+    public override void spawnProjectile(int direction, int frameStarted, BehaviorTree.Tree moveUser)
     {
-        base.spawnProjectile(direction, frameStarted);
+        base.spawnProjectile(direction, frameStarted, moveUser);
         rb.useGravity = false;
         rb.velocity = new Vector3(speed * direction, 0, 0);
     }
@@ -24,6 +24,11 @@ public class FreddyMicThrow : Projectile
 
     private void OnTriggerEnter(Collider other)
     {
+        BehaviorTree.Tree hurtSubject = other.GetComponent<MoveListHolder>().masterTree;
+        if (hurtSubject == moveUser)
+        {
+            return;
+        }
         active = false;
         gameObject.SetActive(false);
         Debug.Log("FREDDY PROJECTILE HIT");

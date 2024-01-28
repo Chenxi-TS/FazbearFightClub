@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Speak Into the Mic
   type: 2
+  hitType: 2
+  powerType: 1
   inputNotations: Md
   damage: 85
-  hitType: 2
   blockDamage: 2.5
   startUpFrames: 5
   activeFrames: 6
   recoveryFrames: 3
+  grabRecovery: 0
   hitAdvantage: 9
   blockAdvantage: 1
-  powerType: 1
   specialCancelables: []
-  moveAnimation: {fileID: 0}
+  moveAnimation: {fileID: 8938248776851302905, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 5022021272024123820, guid: fa7121d3e709b884cb4129f65919b768, type: 3}
+  projectile: {fileID: 0}

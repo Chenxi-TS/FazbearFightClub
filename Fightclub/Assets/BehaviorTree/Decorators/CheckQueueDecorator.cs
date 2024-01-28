@@ -37,9 +37,9 @@ namespace BehaviorTree
                 bufferFrames = inputNotationsArray.Length - 1;
             Dictionary<int, List<string>> actionsWithinBuffer = masterTree.getQueuedActions(bufferFrames, GameManager.Instance.GetCurrentFrame);
             
-            if (actionsWithinBuffer == null)
+            if (actionsWithinBuffer == null && inputNotations != "")
             {
-                Debug.Log("CHECK ACTION NULL");
+                Debug.Log("CHECK ACTION NULL " + childrenNodes[0]);
                 return NodeState.FAILURE;
             }
             int requiredInputsFound = checkRequiredInputs(actionsWithinBuffer, inputNotationsArray, 0, getFirstFrame(actionsWithinBuffer));

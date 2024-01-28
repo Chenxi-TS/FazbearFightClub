@@ -9,10 +9,14 @@ namespace BehaviorTree
     {
         Rigidbody rb;
         Transform transform;
-        public UpdateGroundStateTask(Rigidbody rb, Transform transform) : base() 
+        Tree masterTree;
+        AnimationClip landing;
+        public UpdateGroundStateTask(Tree masterTree, Rigidbody rb, Transform transform, AnimationClip landing) : base() 
         {
             this.rb = rb;
             this.transform = transform;
+            this.masterTree = masterTree;
+            this.landing = landing;
         }
 
         //Updates "GroundState" data
@@ -66,6 +70,7 @@ namespace BehaviorTree
                             addData("RecoveryJump", currentJumpData);
                             removeData("GroundState");
                             root.addData("GroundState", GroundState.RECOVERY);
+                            masterTree.playAnimation(landing);
                         }
                         else
                             Debug.DrawLine(transform.position, transform.position + transform.TransformDirection(Vector3.down) * 1.05f, Color.red);

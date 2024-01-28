@@ -5,9 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class hitBox : MonoBehaviour
 {
-    BehaviorTree.Node moveUser;
+    BehaviorTree.Tree moveUser;
     CurrentAttackData attackData;
-    public void setUser(BehaviorTree.Node user)
+    public void setUser(BehaviorTree.Tree user)
     {
         moveUser = user;
         Debug.Log("USER IS " + user);
@@ -18,8 +18,14 @@ public class hitBox : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("got hit");
         Observer hurtSubject = other.GetComponent<MoveListHolder>().masterTree;
-        attackData = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, attackData.GetMoveData, attackData.GetHitbox, attackData.Projectile);
+        if (hurtSubject == moveUser)
+        {
+            return;
+        }
+        Debug.Log(hurtSubject + "HURT");
+        attackData = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, attackData.GetMoveData, attackData.GetHitbox, attackData.Projectile, moveUser);
         hurtSubject.OnNotify(attackData);
     }
 

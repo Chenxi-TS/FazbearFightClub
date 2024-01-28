@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: Power Outage
   m_EditorClassIdentifier: 
   moveName: Power Outage
-  type: 5
+  type: 4
+  hitType: 3
+  powerType: 3
   inputNotations: Hd,Md
   damage: 22
-  hitType: 3
   blockDamage: 0
-  startUpFrames: 7
-  activeFrames: 4
-  recoveryFrames: 7
+  startUpFrames: 20
+  activeFrames: 3
+  recoveryFrames: 28
+  grabRecovery: 151
   hitAdvantage: 0
   blockAdvantage: 0
-  powerType: 2
   specialCancelables: []
-  moveAnimation: {fileID: 0}
+  moveAnimation: {fileID: -7902461164317922084, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 8226810311282389691, guid: 9eded0127889ec1488e7369faec9a14b, type: 3}
   projectile: {fileID: 0}
-  projectileFirePoint: {fileID: 0}

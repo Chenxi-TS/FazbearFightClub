@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: 2-ElbowWave
   m_EditorClassIdentifier: 
   moveName: 2-ElbowWave
-  type: 5
+  type: 3
+  hitType: 1
+  powerType: 0
   inputNotations: H
   damage: 6
-  hitType: 1
   blockDamage: 1.5
-  startUpFrames: 8
-  activeFrames: 9
-  recoveryFrames: 7
+  startUpFrames: 3
+  activeFrames: 2
+  recoveryFrames: 24
+  grabRecovery: 0
   hitAdvantage: 10
   blockAdvantage: 1
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 7400000, guid: e4975af0b8f04b64b90fc5ba69032edd, type: 2}
+  moveAnimation: {fileID: 0}
   hitbox: {fileID: 8673233326130374880, guid: a95893015f675f54fae226779162225d, type: 3}
   projectile: {fileID: 0}
-  projectileFirePoint: {fileID: 0}

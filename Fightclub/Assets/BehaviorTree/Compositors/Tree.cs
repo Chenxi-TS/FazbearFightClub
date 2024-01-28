@@ -12,11 +12,17 @@ namespace BehaviorTree
 {
     public enum GroundState
     {
-        GROUNDED,
         START_UP,
         AIRBORNE,
+        RECOVERY,
+        GROUNDED,
         CROUCHING,
-        RECOVERY
+    }
+    public enum MovementState
+    {
+        NONE,
+        WALKING,
+        UNCROUCHING
     }
     public enum AttackState
     {
@@ -24,11 +30,13 @@ namespace BehaviorTree
         NONE,
         START_UP,
         ACTIVE,
-        RECOVERY,
-        //damn the enemy got hands
+        GRABBING,
+        RECOVERY, 
+        //(Anything below recovery means getting hit)damn the enemy got hands
         HIT_STUN_RECOVERY,
         KNOCK_DOWN,
         HARD_KNOCK_DOWN,
+        GRABBED,
     }
     public enum DefenseState
     {
@@ -41,19 +49,21 @@ namespace BehaviorTree
     public class Tree : Node, Observer
     {
         public List<MoveData> allMoves;
+        protected List<AnimationClip> movementAnimations;
+        protected List<AnimationClip> damageAnimations;
         protected int characterID;
         public int getcharacterID { get { return characterID; } }
 
         protected Rigidbody rb;
         protected Transform transform;
+        public Transform getTransform { get { return transform; } }
         protected Animator animator;
 
         protected Dictionary<KeyCode, Command> characterMoveList = new Dictionary<KeyCode, Command>();
         protected Dictionary<int, List<string>> queuedActions = new Dictionary<int, List<string>>();
 
-        public Tree(int playerSlotNumber, int characterID)
+        public Tree(int playerSlotNumber, GameObject characterBody)
         {
-            this.characterID = characterID;
             characterMoveList.Clear();
             //movement
             JumpCommand jump = new JumpCommand();
@@ -142,6 +152,23 @@ namespace BehaviorTree
                 return;
             }
         }
+        public virtual void playAnimation(AnimationClip animation, bool force)
+        {
+            if (animation == null)
+                return;
+            if (animator == null)
+                return;
+            try
+            {
+                animator.Play(animation.name, 0, 0);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("NOT PLAYING ANIMATION");
+                Debug.LogException(e);
+                return;
+            }
+        }
         public void resetAnimation()
         {
             animator.Rebind();
@@ -175,6 +202,8 @@ namespace BehaviorTree
         }
         protected void gotHit(CurrentAttackData attackData)
         {
+            if (root == null)
+                root = findRoot();
             int curFrame = GameManager.Instance.GetCurrentFrame;
             if (queuedActions.ContainsKey(curFrame))
             {
@@ -186,25 +215,59 @@ namespace BehaviorTree
                 gotHitAction.Add("GOT HIT");
                 queuedActions.Add(curFrame, gotHitAction);
             }
+            if ((GroundState)root.findData("GroundState") < GroundState.GROUNDED)
+            {
+                if ((AttackState)root.findData("AttackState") <= AttackState.RECOVERY)
+                    playAnimation(damageAnimations[3]);
+                else
+                    playAnimation(damageAnimations[4]);
+            }
+            else if ((GroundState)root.findData("GroundState") == GroundState.CROUCHING)
+            {
+                playAnimation(damageAnimations[5]);
+            }
+            else
+            {
+                switch (attackData.GetMoveData.hitType)
+                {
+                    case HitType.MID:
+                        playAnimation(damageAnimations[0], true);
+                        break;
+                    case HitType.OVERHEAD:
+                        playAnimation(damageAnimations[1], true);
+                        break;
+                    case HitType.LOW:
+                        playAnimation(damageAnimations[2], true);
+                        break;
+                    case HitType.GRAB:
+                        playAnimation(damageAnimations[3], true);
+                        break;
+                }
+            }
             root.removeData("EnemyAttackData");
             root.addData("EnemyAttackData", attackData);
             root.removeData("AttackState");
             switch (attackData.GetMoveData.powerType)
             {
-                case MoveData.PowerType.NORMAL:
+                case PowerType.NORMAL:
                     root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
                     break;
-                case MoveData.PowerType.KNOCK_DOWN:
+                case PowerType.KNOCK_DOWN:
                     root.addData("AttackState", AttackState.KNOCK_DOWN);
                     break;
-                case MoveData.PowerType.HARD_KNOCK_DOWN:
+                case PowerType.HARD_KNOCK_DOWN:
                     root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
+                    break;
+                case PowerType.GRAB:
+                    root.addData("AttackState", AttackState.GRABBED);
+                    attackData.NotifyOwnerAttackConnected();
                     break;
             }
             Debug.Log("GOT HIT " + transform.name + " " + curFrame);
             rb.velocity = Vector3.zero;
-            //GameManager.Instance.hitStop(.1f);
+            GameManager.Instance.hitStop(.13f);
         }
+        public virtual void HitConnected(MoveData connectedMove) { }
         string checkForDiagonals(string currentKey, string exisitingKey)
         {
             bool up = false;

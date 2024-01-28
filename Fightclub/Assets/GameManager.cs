@@ -13,19 +13,27 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public int updateEveryFPS = 60;
+    public int updateFPS = 60;
     float updateInterval;
+
+    [SerializeField]
+    Transform player1SpawnLocation;
+    [SerializeField]
+    Transform player2SpawnLocation;
 
     public List<GameObject> characters = new List<GameObject>();
     BehaviorTree.Tree firstPlayer;
     BehaviorTree.Tree secondPlayer;
+
+    bool player1LeftOfPlayer2 = true;
+    public bool getPlayer1FacingRight { get { return player1LeftOfPlayer2; } }
 
     [SerializeField]
     int currentFrame = 0;
     public int GetCurrentFrame { get { return currentFrame; } }
 
     [SerializeField]
-    float roundDuration;
+    float roundDurationInSeconds;
     bool gaming = false;
 
     InputHandler player1InputHandler;
@@ -36,7 +44,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 120;
-        updateInterval = 1 / updateEveryFPS;
+        updateInterval = 1 / updateFPS;
         if (Instance != null && Instance != this)
             DestroyImmediate(Instance);
         else if (Instance == null)
@@ -51,7 +59,7 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        StartRound(0, 1); //temp for testing call this wherever players choose their characters
+        StartRound(0, 0); //temp for testing call this wherever players choose their characters
     }
 
     //Starts round with 2 player setting up each player's character tree...
@@ -66,33 +74,28 @@ public class GameManager : MonoBehaviour
         //make trees here
         firstPlayer = constructCharacterTree(1, p1CharacterID);
         secondPlayer = constructCharacterTree(2, p2CharacterID);
-        StartCoroutine(RoundTimer(roundDuration));
-        StartCoroutine(FrameUpdate());
-    }
-    //...or start with 1 player
-    public void StartRound(int p1CharacterID)
-    {
-        if (gaming)
-        {
-            Debug.Log("Already gaming");
-            return;
-        }
-        gaming = true;
-        //make trees here
-        firstPlayer = constructCharacterTree(1, p1CharacterID);
-        StartCoroutine(RoundTimer(roundDuration));
+        StartCoroutine(RoundTimer(roundDurationInSeconds));
         StartCoroutine(FrameUpdate());
     }
     //returns different character trees base on characterID, 
     //same as GameObject stored in List<GameObject> characters
     BehaviorTree.Tree constructCharacterTree(int slot ,int characterID)
     {
+        GameObject newFighterBody = Instantiate(GameManager.Instance.characters[characterID]);
+        if (slot == 1)
+            newFighterBody.transform.position = player1SpawnLocation.position;
+        else
+        {
+            newFighterBody.transform.position = player2SpawnLocation.position;
+            newFighterBody.transform.localScale = new Vector3 (1, 1, -1);
+        }
+
         switch (characterID) 
         {
             case 0:
-                return new Char_01_Tree(slot, characterID);
+                return new Char_01_Tree(slot, newFighterBody);
             case 1:
-                return new Char_01_Tree(slot, characterID);
+                //return new Char_01_Tree(slot, characterID);
             default:
                 Debug.LogWarning(characterID + " TREE CONSTRUCTION NOT SET UP");
                 return null;
@@ -162,8 +165,16 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator hitStun(float hitStopTime)
     {
-        Time.timeScale = 0;
+        Time.timeScale = .1f;
         yield return new WaitForSecondsRealtime(hitStopTime);
         Time.timeScale = 1;
+    }
+
+    void trackPlayerFacing()
+    {
+        if (firstPlayer.getTransform.position.x < secondPlayer.getTransform.position.x)
+            player1LeftOfPlayer2 = true;
+        else if(firstPlayer.getTransform.position.x > secondPlayer.getTransform.position.x)
+            player1LeftOfPlayer2 = false;
     }
 }

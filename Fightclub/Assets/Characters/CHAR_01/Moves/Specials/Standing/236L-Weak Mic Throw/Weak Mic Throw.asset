@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Weak Mic Throw
   type: 5
+  hitType: 1
+  powerType: 0
   inputNotations: 2,3,6,Ld
   damage: 14
-  hitType: 1
   blockDamage: 2
   startUpFrames: 6
   activeFrames: 3
   recoveryFrames: 4
+  grabRecovery: 0
   hitAdvantage: 7
   blockAdvantage: -1
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 0}
+  moveAnimation: {fileID: -1167595880704471605, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 5166993720921366192, guid: a129f5ab73a8a4040baca101e716ccd4, type: 3}
   projectile: {fileID: 5037302603977791932, guid: 1681a0024d4afb2439169e9f29e0b2f6, type: 3}
-  projectileFirePoint: {fileID: 3428710883978873779, guid: f2860d08a91456042934acb7aa9e6644, type: 3}

@@ -12,15 +12,19 @@ namespace BehaviorTree
     public class Char_01_Tree : Tree, Observer
     {
         //base sets up a new inputManager for this tree specifically and adds movement and attack buttons
-        public Char_01_Tree(int playerSlotNumber, int characterID) : base(playerSlotNumber, characterID)
+        public Char_01_Tree(int playerSlotNumber, GameObject characterBody) : base(playerSlotNumber, characterBody)
         {
             Debug.Log("CHAR 1 TREE MADE");
-            rb = GameManager.Instance.characters[characterID].GetComponent<Rigidbody>();
+            rb = characterBody.GetComponent<Rigidbody>();
             transform = rb.transform;
-            animator = transform.GetComponent<Animator>();
+            animator = transform.GetChild(0).GetComponent<Animator>();
 
-            MoveListHolder moveListHolder = GameManager.Instance.characters[characterID].GetComponent<MoveListHolder>();
+            MoveListHolder moveListHolder = characterBody.GetComponent<MoveListHolder>();
             moveListHolder.masterTree = this;
+
+            movementAnimations = moveListHolder.movementAnimations;
+            damageAnimations = moveListHolder.damageAnimations;
+
             Debug.Log(this + " TREE");
 
             #region ATTACKS
@@ -80,13 +84,17 @@ namespace BehaviorTree
             {
                 new BurstTask(),
                 //Updates
-                new UpdateGroundStateTask(rb, transform),
-                new CheckHitQueue(new List<Node>{new UpdateHitTask()}, this),
+                new UpdateGroundStateTask(this, rb, transform, movementAnimations[3]),
+                new CheckHitQueue(new List<Node>{new UpdateHitTask(this, movementAnimations[6])}, this),
                 new UpdateAttackStateTask(this), 
                 //Crouch
                 new Selector(new List<Node> {
                     new CheckGroundStateDecorator(GroundState.GROUNDED,
-                        new CheckQueueDecorator(new List<Node>{ crouching}, this, CROUCHING.inputNotations, 0, "crouch")),
+                        new Selector(new List<Node> {
+                            new CheckQueueDecorator(new List<Node>{ crouching}, this, "2", 0, "crouch"),
+                            new CheckQueueDecorator(new List<Node>{ crouching}, this, "1", 0, "crouch"),
+                            new CheckQueueDecorator(new List<Node>{ crouching}, this, "3", 0, "crouch")
+                        })),
                     //Uncrouch
                     new CheckGroundStateDecorator(GroundState.CROUCHING,
                         new CheckQueueDecorator(new List<Node>{ uncroucing}, this, UNCROUCHING.inputNotations, 0, "uncrouch"))
@@ -132,19 +140,20 @@ namespace BehaviorTree
                     }),
                     new CheckGroundStateDecorator(GroundState.GROUNDED,
                         new Selector(new List<Node>{ //Movements
-                            //Jump & Crouch
+                            //Jump
                             new Selector(new List<Node>
                             {
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 10)}, this, "9", 0), //Jump right
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 10)}, this, "7", 0), //Jump left
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 10)}, this, "8", 0), //Jump up
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 10, movementAnimations[2])}, this, "9", 0), //Jump right
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 10, movementAnimations[2]) }, this, "7", 0), //Jump left
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 10, movementAnimations[2]) }, this, "8", 0), //Jump up
                                 
                             }),
                             //Left & Right
                             new Selector (new List<Node>
                             {
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left")}, this, "4", 0),
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right")}, this, "6", 0)
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left", this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "4", 0),
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right",this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "6", 0),
+                                new IdleTask(this, rb, movementAnimations[6]),
                             })
                         })
                     )
@@ -161,6 +170,16 @@ namespace BehaviorTree
         public override void Evaluate()
         {
             NodeState state = root.Evaluate();
+        }
+
+        public override void HitConnected(MoveData connectedMove)
+        {
+            if(connectedMove.powerType == PowerType.GRAB)
+            {
+                root.removeData("AttackState");
+                root.addData("AttackState", AttackState.GRABBING);
+                playAnimation(movementAnimations[7]);
+            }
         }
     }
 }

@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Uncrouch
   type: 0
+  hitType: 1
+  powerType: 0
   inputNotations: 2e
   damage: 0
-  hitType: 1
   blockDamage: 0
   startUpFrames: 0
   activeFrames: 0
   recoveryFrames: 0
+  grabRecovery: 0
   hitAdvantage: 0
   blockAdvantage: 0
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 7400000, guid: 8c9349ec9809dca40ac27b8d41840147, type: 2}
+  moveAnimation: {fileID: 5971512553345767833, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 0}
+  projectile: {fileID: 0}

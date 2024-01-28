@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Crouch
   type: 0
+  hitType: 0
+  powerType: 0
   inputNotations: 2
   damage: 0
-  hitType: 0
   blockDamage: 0
   startUpFrames: 0
   activeFrames: 0
   recoveryFrames: 0
+  grabRecovery: 0
   hitAdvantage: 0
   blockAdvantage: 0
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 7400000, guid: 554a2c1552e127a4e9f9f15ce6967f16, type: 2}
+  moveAnimation: {fileID: 9029720509447684221, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 0}
   projectile: {fileID: 0}
-  projectileFirePoint: {fileID: 0}

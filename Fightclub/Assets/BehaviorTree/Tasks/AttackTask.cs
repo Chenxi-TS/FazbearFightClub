@@ -27,14 +27,14 @@ namespace BehaviorTree
             hitbox.transform.SetParent(transform);
             hitbox.transform.localPosition = Vector3.zero;
             hitbox.SetActive(false);
-            hitbox.GetComponentInChildren<hitBox>().setUser(findRoot());
+            hitbox.GetComponentInChildren<hitBox>().setUser(masterTree);
             //projectile spawn
             if (moveData.projectile != null)
             {
                 projectileClone = MonoBehaviour.Instantiate(moveData.projectile);
                 projectileClone.transform.SetParent(transform);
                 projectileClone.SetActive(false);
-                projectileClone.GetComponent<hitBox>().setUser(findRoot());
+                projectileClone.GetComponent<hitBox>().setUser(masterTree);
                 projectileClone.transform.SetParent(null);
             }
         }
@@ -49,7 +49,7 @@ namespace BehaviorTree
             hitbox.transform.SetParent(transform);
             hitbox.transform.localPosition = Vector3.zero;
             hitbox.SetActive(false);
-            hitbox.GetComponentInChildren<hitBox>().setUser(findRoot());
+            hitbox.GetComponentInChildren<hitBox>().setUser(masterTree);
             this.prereqMove = prereqMove;
         }
 
@@ -74,7 +74,7 @@ namespace BehaviorTree
             //Checks if this move can be performed without interuption
             //-> FAILURE if we are being hit
             //-> FAILURE if current attack is not the prerequisite move
-            //-> perform attack if no move is being performed currently
+            //-> perform attack now if no move is being performed currently
             AttackState currentAttackState = (AttackState)findData("AttackState");
             if (currentAttackState >= AttackState.HIT_STUN_RECOVERY)
             {
@@ -84,11 +84,11 @@ namespace BehaviorTree
             if (currentAttackState == AttackState.NONE && prereqMove == null)
                 performAttack((GroundState)findData("GroundState"));
 
-            //Checks if this move can be interupt current move
+            //If move is currently being perform, check if this move can interupt current move
             //-> checks if this move has a prereqMove
-            //-> normals cancelable in order of H>M>L
+            //-> normals cancelable order of Heavy>Medium>Light
             //-> commands cancel all normals
-            //-> specials cancel all normals and specials
+            //-> specials cancel all commands and normals
             //-> specials can cancel specified specials
             CurrentAttackData currentAttackData = (CurrentAttackData)findData("CurrentAttack");
             if (currentAttackData == null)
@@ -96,25 +96,30 @@ namespace BehaviorTree
             if (prereqMove != null)
                 if (currentAttackData.GetMoveData != prereqMove)
                     return NodeState.FAILURE;
-            MoveData.MoveType currentAttackType = currentAttackData.GetMoveData.type;
+                else
+                {
+                    if(currentAttackState == AttackState.RECOVERY)
+                        performAttack((GroundState)findData("GroundState"));
+                }
+            MoveType currentAttackType = currentAttackData.GetMoveData.type;
             //Debug.Log("CURRENT TYPE " + currentAttackType);
             if (currentAttackState == AttackState.RECOVERY)
             {
                 switch (currentAttackType)
                 {
-                    case < MoveData.MoveType.COMMAND:
+                    case < MoveType.COMMAND:
                         if (moveData.type > currentAttackType)
                         {
                             Debug.Log("CANCEL? " + moveData.type + " vs. " + currentAttackType);
                             performAttack((GroundState)findData("GroundState"));
                         }
                         break;
-                    case MoveData.MoveType.COMMAND:
-                        if (moveData.type >= MoveData.MoveType.SPECIAL)
+                    case MoveType.COMMAND:
+                        if (moveData.type >= MoveType.SPECIAL)
                             performAttack((GroundState)findData("GroundState"));
                         break;
-                    case MoveData.MoveType.SPECIAL:
-                        if (moveData.type >= MoveData.MoveType.SUPER)
+                    case MoveType.SPECIAL: 
+                        if (moveData.type >= MoveType.SUPER)
                         {
                             performAttack((GroundState)findData("GroundState"));
                         }
@@ -122,7 +127,7 @@ namespace BehaviorTree
                         {
                             foreach(MoveData specials in currentAttackData.GetMoveData.specialCancelables)
                             {
-                                if (specials.type != MoveData.MoveType.SPECIAL)
+                                if (specials.type != MoveType.SPECIAL)
                                     Debug.LogError(currentAttackData.GetMoveData.moveName + " has " + specials.moveName + " in specialCancelables and is not a special");
                                 if (specials.moveName == moveData.moveName)
                                     performAttack((GroundState)findData("GroundState"));
@@ -134,34 +139,41 @@ namespace BehaviorTree
             return NodeState.FAILURE;
         }
 
+        //Start Move Execution
         NodeState performAttack(GroundState groundState)
         {
-            //Debug.Log("AttackTask performed: " + moveData.moveName);
-            //play animation, spawn hitboxes, add currentAttack
+            //Debug.Log("MOVE PERFORMED " + moveData.name + " " + GameManager.Instance.GetCurrentFrame);
             removeData("CurrentAttack");
 
+            //Check for GameManager and moveData
             if (GameManager.Instance == null)
                 Debug.Log("GameManagerNULL");
             else if (moveData == null)
                 Debug.Log("moveDataNULL");
             
+            //Stop momentum if grounded
             if(groundState != GroundState.AIRBORNE)
                 rb.velocity = new Vector3 (0, rb.velocity.y, 0);
 
+            //If this move includes a projectile
+            //->set up projectile fire point position
             if (moveData.projectile != null)
             {
                 if (projectileClone.activeSelf == true)
                     return NodeState.FAILURE;
                 projectile = projectileClone.GetComponent<Projectile>();
-                projectile.setSpawn(GameManager.Instance.characters[masterTree.getcharacterID].GetComponent<MoveListHolder>().projectileFirePoints[projectile.firePointNum]);
+                projectile.setSpawn(rb.transform);
             }
+            //Create CurrentAttackData object
+            //->set CurrentAttack data for the tree
+            //->give CurrentAttack data for hitbox
+            CurrentAttackData curAttack = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox, projectile, masterTree);
+            root.addData("CurrentAttack", curAttack);
+            hitbox.GetComponentInChildren<hitBox>().setAttackData((CurrentAttackData)findData("CurrentAttack"));
 
-            root.addData("CurrentAttack", new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox, projectile));
-            Debug.Log("MOVE PERFORMED " + moveData.name + " " + GameManager.Instance.GetCurrentFrame);
+            //Also give projectile's hitbox CurrentAttack data if move includes a projectile
             if (moveData.projectile != null)
                 projectile.GetComponent<hitBox>().setAttackData((CurrentAttackData)findData("CurrentAttack"));
-            else
-                hitbox.GetComponentInChildren<hitBox>().setAttackData((CurrentAttackData)findData("CurrentAttack"));
 
             removeData("AttackState");
             root.addData("AttackState", AttackState.START_UP);

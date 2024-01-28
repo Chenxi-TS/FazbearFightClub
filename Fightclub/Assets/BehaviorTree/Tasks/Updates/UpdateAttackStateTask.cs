@@ -42,7 +42,7 @@ namespace BehaviorTree
             {
                 //switch to active state
                 case AttackState.START_UP:
-                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted >= curAttackData.startUpFrames - 1)
+                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted + 1 >= curAttackData.startUpFrames)
                     {
                         removeData("AttackState");
                         root.addData("AttackState", AttackState.ACTIVE);
@@ -51,20 +51,31 @@ namespace BehaviorTree
                     break;
                 //switch to recovery state
                 case AttackState.ACTIVE:
-                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted >= (curAttackData.startUpFrames + curAttackData.activeFrames) - 1)
+                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted + 1 >= (curAttackData.startUpFrames + curAttackData.activeFrames))
                     {
                         removeData("AttackState"); 
                         root.addData("AttackState", AttackState.RECOVERY);;
                         if (curAttack.Projectile != null)
                         {
-                            curAttack.Projectile.spawnProjectile(1, GameManager.Instance.GetCurrentFrame);
+                            curAttack.Projectile.spawnProjectile(1, GameManager.Instance.GetCurrentFrame, masterTree);
                         }
                         curAttack.GetHitbox.SetActive(false);
                     }
                     break;
                 //switch to no attack state (remove CurrentAttackData)
                 case AttackState.RECOVERY:
-                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted >= (curAttackData.startUpFrames + curAttackData.activeFrames + curAttackData.recoveryFrames) - 1)
+                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted + 1 >= (curAttackData.startUpFrames + curAttackData.activeFrames + curAttackData.recoveryFrames))
+                    {
+                        removeData("AttackState");
+                        root.addData("AttackState", AttackState.NONE);
+                        removeData("CurrentAttack");
+                        return NodeState.FAILURE;
+                    }
+                    break;
+                //switch to no attack state (remove CurrentAttackData)
+                case AttackState.GRABBING:
+                    curAttack.GetHitbox.SetActive(false);
+                    if (GameManager.Instance.GetCurrentFrame - frameAttackStarted + 1 >= (curAttackData.startUpFrames + curAttackData.activeFrames + curAttackData.grabRecovery))
                     {
                         removeData("AttackState");
                         root.addData("AttackState", AttackState.NONE);
@@ -73,7 +84,6 @@ namespace BehaviorTree
                     }
                     break;
             }
-
             return NodeState.FAILURE;
         }
     }

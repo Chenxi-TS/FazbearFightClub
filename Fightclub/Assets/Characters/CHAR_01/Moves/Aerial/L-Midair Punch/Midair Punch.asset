@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Midair Punch
   type: 1
+  hitType: 0
+  powerType: 0
   inputNotations: Ld
   damage: 3
-  hitType: 0
   blockDamage: 0.5
   startUpFrames: 3
   activeFrames: 4
   recoveryFrames: 3
+  grabRecovery: 0
   hitAdvantage: 9
   blockAdvantage: 0
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 0}
+  moveAnimation: {fileID: 4893027192296678557, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 5615957484945235790, guid: ffe7be0d34821524684eaeb8eea86df0, type: 3}
+  projectile: {fileID: 0}

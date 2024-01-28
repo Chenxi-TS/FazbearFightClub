@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Hand-Break
   type: 2
+  hitType: 1
+  powerType: 0
   inputNotations: Md
   damage: 7
-  hitType: 1
   blockDamage: 2
-  startUpFrames: 5
-  activeFrames: 6
-  recoveryFrames: 5
+  startUpFrames: 10
+  activeFrames: 3
+  recoveryFrames: 17
+  grabRecovery: 0
   hitAdvantage: 9
   blockAdvantage: -2
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 6493312403489706959, guid: 859d9a382e622ca4f8b8ddb60f7c8c2f, type: 3}
+  moveAnimation: {fileID: 6493312403489706959, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 1312826613937417264, guid: 920e2769a9fad0c42a781476266b0639, type: 3}
   projectile: {fileID: 0}
-  projectileFirePoint: {fileID: 0}

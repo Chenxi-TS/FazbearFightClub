@@ -6,8 +6,12 @@ namespace BehaviorTree
 {
     public class UpdateHitTask : Node
     {
-        public UpdateHitTask() : base()
+        Tree masterTree;
+        AnimationClip idle;
+        public UpdateHitTask(Tree masterTree, AnimationClip idle) : base()
         { 
+            this.masterTree = masterTree;
+            this.idle = idle;
         }
         public override NodeState Evaluate()
         {
@@ -22,26 +26,39 @@ namespace BehaviorTree
             CurrentAttackData enemyAttackData = (CurrentAttackData)findData("EnemyAttackData");
             int startingFrame = enemyAttackData.GetStartingFrame;
             //check if defending here
-
             switch((AttackState)findData("AttackState"))
             {
                 case AttackState.HIT_STUN_RECOVERY:
-                    Debug.Log("HIT STUN " + (GameManager.Instance.GetCurrentFrame - startingFrame) + ", " + GameManager.Instance.GetCurrentFrame + " " + startingFrame);
+                    Debug.Log("HIT STUN: Stuned:" + (GameManager.Instance.GetCurrentFrame - startingFrame + 1) + ", Current: " + GameManager.Instance.GetCurrentFrame + " Start:" + startingFrame);
                     MoveData enemyMove = enemyAttackData.GetMoveData;
-                    if (GameManager.Instance.GetCurrentFrame - startingFrame >= (enemyMove.activeFrames + enemyMove.recoveryFrames + enemyMove.hitAdvantage - 1))
+                    if (GameManager.Instance.GetCurrentFrame - startingFrame  + 1 >= (enemyMove.activeFrames + enemyMove.recoveryFrames + enemyMove.hitAdvantage))
                     {
-                        Debug.Log("HIT STUN +" +  enemyMove.hitAdvantage + "\n STUNNED FOR: "  +(enemyMove.activeFrames + enemyMove.recoveryFrames + enemyMove.hitAdvantage) +
-                            "\n FRAME:" + GameManager.Instance.GetCurrentFrame);
+                        Debug.Log("HIT STUN Advantage: +" +  enemyMove.hitAdvantage + 
+                            "\n RECOVERED ON FRAME:" + GameManager.Instance.GetCurrentFrame +
+                            ", STUNNED FOR: " + (enemyMove.activeFrames + enemyMove.recoveryFrames + enemyMove.hitAdvantage));
+                        Debug.Log("RECOVERED FROM HIT STUN STATE");
+
                         removeData("AttackState");
                         root.addData("AttackState", AttackState.NONE);
-                        Debug.Log("RECOVER FROM HIT " + (AttackState)findData("AttackState"));
+                        masterTree.playAnimation(idle);
                         return NodeState.FAILURE;
                     }
-                    //return NodeState.RUNNING;
                     return NodeState.SUCCESS;
                 case AttackState.KNOCK_DOWN: 
                     break;
                 case AttackState.HARD_KNOCK_DOWN:
+                    break;
+                case AttackState.GRABBED:
+                    int grabRecoveryFrames = enemyAttackData.GetMoveData.grabRecovery;
+                    if(GameManager.Instance.GetCurrentFrame - startingFrame + 1 >= grabRecoveryFrames)
+                    {
+                        Debug.Log("GRAB STUNNED: " + grabRecoveryFrames
+                            + "\n RECOVERED ON FRAME: " + GameManager.Instance.GetCurrentFrame);
+                        removeData("AttackState");
+                        root.addData("AttackState", AttackState.NONE);
+                        masterTree.playAnimation(idle);
+                        return NodeState.FAILURE;
+                    }
                     break;
                 default:
                     break;

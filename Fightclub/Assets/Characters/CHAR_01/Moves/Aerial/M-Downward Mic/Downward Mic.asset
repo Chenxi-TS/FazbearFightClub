@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Downward Mic
   type: 2
+  hitType: 0
+  powerType: 0
   inputNotations: Md
   damage: 9
-  hitType: 0
   blockDamage: 2.5
   startUpFrames: 7
   activeFrames: 4
   recoveryFrames: 10
+  grabRecovery: 0
   hitAdvantage: 9
   blockAdvantage: 0
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 0}
+  moveAnimation: {fileID: 1782296709725589744, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 950732647047880832, guid: 6dd2251c2a34054429941aab0636ffa9, type: 3}
+  projectile: {fileID: 0}

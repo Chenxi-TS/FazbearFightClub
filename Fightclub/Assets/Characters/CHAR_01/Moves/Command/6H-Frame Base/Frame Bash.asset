@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Frame Bash
   type: 4
+  hitType: 1
+  powerType: 0
   inputNotations: 6,Hd
   damage: 16
-  hitType: 1
   blockDamage: 6
   startUpFrames: 11
   activeFrames: 12
   recoveryFrames: 8
+  grabRecovery: 0
   hitAdvantage: 4
   blockAdvantage: -4
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 0}
+  moveAnimation: {fileID: 8215985808229723409, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 8544456023464811378, guid: 5d1840874622d8e43b79c54b85d32208, type: 3}
+  projectile: {fileID: 0}
