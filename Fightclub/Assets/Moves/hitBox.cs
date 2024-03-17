@@ -18,15 +18,21 @@ public class hitBox : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("got hit");
-        Observer hurtSubject = other.GetComponent<MoveListHolder>().masterTree;
-        if (hurtSubject == moveUser)
+        Debug.Log("got a hit on " + other.transform.name);
+        MoveListHolder otherHolder;
+        other.TryGetComponent<MoveListHolder>(out otherHolder);
+        Observer hurtSubject;
+        if (otherHolder != null)
         {
-            return;
+            hurtSubject = otherHolder.masterTree;
+            if (hurtSubject == moveUser)
+            {
+                return;
+            }
+            Debug.Log(hurtSubject + "HURT");
+            attackData = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, attackData.GetMoveData, attackData.GetHitbox, attackData.Projectile, moveUser);
+            hurtSubject.OnNotify(attackData);
         }
-        Debug.Log(hurtSubject + "HURT");
-        attackData = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, attackData.GetMoveData, attackData.GetHitbox, attackData.Projectile, moveUser);
-        hurtSubject.OnNotify(attackData);
     }
 
     private void Reset()

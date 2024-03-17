@@ -17,11 +17,14 @@ namespace BehaviorTree
         GameObject hitbox;
         GameObject projectileClone;
         Projectile projectile;
-        public AttackTask (MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform)
+
+        int playerSlot = 0;
+        public AttackTask (MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform, int playerSlot)
         {
             this.moveData = moveData;
             this.masterTree = masterTree;
             this.rb = rb;
+            this.playerSlot = playerSlot;
             //move hitbox spawn
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
@@ -40,11 +43,12 @@ namespace BehaviorTree
         }
         //If this move is a Rekka (follow up move/multi hit move),
         //specify the prerequisite move
-        public AttackTask(MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform, MoveData prereqMove)
+        public AttackTask(MoveData moveData, Tree masterTree, Rigidbody rb, Transform transform, MoveData prereqMove, int playerSlot)
         {
             this.moveData = moveData;
             this.masterTree = masterTree;
             this.rb = rb;
+            this.playerSlot = playerSlot;
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
             hitbox.transform.localPosition = Vector3.zero;
@@ -155,6 +159,9 @@ namespace BehaviorTree
             if(groundState != GroundState.AIRBORNE)
                 rb.velocity = new Vector3 (0, rb.velocity.y, 0);
 
+            //change hitbox local transform base on where the player is facing
+            updateHitboxLocalScale(hitbox.transform);
+
             //If this move includes a projectile
             //->set up projectile fire point position
             if (moveData.projectile != null)
@@ -179,6 +186,26 @@ namespace BehaviorTree
             root.addData("AttackState", AttackState.START_UP);
             masterTree.playAnimation(moveData.moveAnimation);
             return NodeState.SUCCESS;
+        }
+
+        void updateHitboxLocalScale(Transform hitbox)
+        {
+            if (GameManager.Instance.getPlayer1FacingRight)
+            {
+                Debug.Log("RIGHT face");
+                if (playerSlot == 1)
+                    hitbox.localScale = new Vector3(1, hitbox.localScale.y, hitbox.localScale.z);
+                else
+                    hitbox.localScale = new Vector3(-1, hitbox.localScale.y, hitbox.localScale.z);
+            }
+            else if (!GameManager.Instance.getPlayer1FacingRight)
+            {
+                Debug.Log("LEFT face");
+                if (playerSlot == 1)
+                    hitbox.localScale = new Vector3(-1, hitbox.localScale.y, hitbox.localScale.z);
+                else
+                    hitbox.localScale = new Vector3(1, hitbox.localScale.y, hitbox.localScale.z);
+            }
         }
     }
 }

@@ -13,19 +13,11 @@ namespace BehaviorTree
         string inputNotations;
         int bufferFrames = 0;
 
-        string aname;
         public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames) : base(childrenNodes)
         {
             this.masterTree = masterTree;
             this.inputNotations = inputNotations;
             this.bufferFrames = bufferFrames;
-        }
-        public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames, string aname) : base(childrenNodes) 
-        { 
-            this.masterTree = masterTree;
-            this.inputNotations = inputNotations;
-            this.bufferFrames = bufferFrames;
-            this.aname = aname;
         }
         public override NodeState Evaluate()
         {
@@ -64,6 +56,7 @@ namespace BehaviorTree
                         if (inputNotationsArray[inputPointer] == s && action.Key >= lastFoundFrame)
                         {
                             inputPointer++;
+                            //so it stays in sequence of inputs
                             lastFoundFrame = action.Key;
                             foundMatch = true;
                             break;
@@ -80,6 +73,7 @@ namespace BehaviorTree
 
             return inputPointer;
         }
+        //just gets first frame? i forgot why i did it like this exactly, best to just leave it be i forgor whats happening x_x this is what i get for not commenting
         int getFirstFrame(Dictionary<int, List<string>> actionDictionary)
         {
             foreach (int frame in actionDictionary.Keys)

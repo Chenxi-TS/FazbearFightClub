@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
 namespace BehaviorTree
@@ -27,22 +28,23 @@ namespace BehaviorTree
     public enum AttackState
     {
         //Attacking
-        NONE,
+        NONE = 0,
         START_UP,
         ACTIVE,
         GRABBING,
-        RECOVERY, 
-        //(Anything below recovery means getting hit)damn the enemy got hands
+        RECOVERY = 4, 
+        //damn the enemy got hands
         HIT_STUN_RECOVERY,
+        HIT_STUN_CROUCH,
         KNOCK_DOWN,
         HARD_KNOCK_DOWN,
         GRABBED,
+        BLOCK_STUN
     }
     public enum DefenseState
     {
         NONE,
         HIGH_BLOCK,
-        MID_BLOCK,
         LOW_BLOCK,
     }
 
@@ -51,7 +53,10 @@ namespace BehaviorTree
         public List<MoveData> allMoves;
         protected List<AnimationClip> movementAnimations;
         protected List<AnimationClip> damageAnimations;
+        protected List<AnimationClip> recoveryAnimations;
+
         protected int characterID;
+        protected int playerSlotNum;
         public int getcharacterID { get { return characterID; } }
 
         protected Rigidbody rb;
@@ -75,6 +80,7 @@ namespace BehaviorTree
             AttackCommand MediumAttack = new AttackCommand(AttackCommand.AttackButtons.MEDIUM);
             AttackCommand HeavyAttack = new AttackCommand(AttackCommand.AttackButtons.HEAVY);
 
+            this.playerSlotNum = playerSlotNumber;
             if (playerSlotNumber == 1)
             {
                 Debug.Log("player 1 tree created");
@@ -202,6 +208,7 @@ namespace BehaviorTree
         }
         protected void gotHit(CurrentAttackData attackData)
         {
+            bool hitStunCrouch = false;
             if (root == null)
                 root = findRoot();
             int curFrame = GameManager.Instance.GetCurrentFrame;
@@ -215,53 +222,65 @@ namespace BehaviorTree
                 gotHitAction.Add("GOT HIT");
                 queuedActions.Add(curFrame, gotHitAction);
             }
-            if ((GroundState)root.findData("GroundState") < GroundState.GROUNDED)
+            if ((DefenseState)root.findData("DefenseState") == DefenseState.NONE)
             {
-                if ((AttackState)root.findData("AttackState") <= AttackState.RECOVERY)
-                    playAnimation(damageAnimations[3]);
-                else
-                    playAnimation(damageAnimations[4]);
-            }
-            else if ((GroundState)root.findData("GroundState") == GroundState.CROUCHING)
-            {
-                playAnimation(damageAnimations[5]);
-            }
-            else
-            {
-                switch (attackData.GetMoveData.hitType)
+                if ((GroundState)root.findData("GroundState") < GroundState.GROUNDED) //not grounded
                 {
-                    case HitType.MID:
-                        playAnimation(damageAnimations[0], true);
+                    if ((AttackState)root.findData("AttackState") <= AttackState.RECOVERY)
+                        playAnimation(damageAnimations[3]); //"jump out of" got hit animation
+                    else
+                        playAnimation(damageAnimations[4]); //hit in air again, play different animation 
+                }
+                else if ((GroundState)root.findData("GroundState") == GroundState.CROUCHING)
+                {
+                    playAnimation(damageAnimations[5]); //crouch hit
+                    hitStunCrouch = true;
+                }
+                else
+                {
+                    switch (attackData.GetMoveData.hitType)
+                    {
+                        case HitType.MID:
+                            playAnimation(damageAnimations[0], true);
+                            break;
+                        case HitType.OVERHEAD:
+                            playAnimation(damageAnimations[1], true);
+                            break;
+                        case HitType.LOW:
+                            playAnimation(damageAnimations[2], true);
+                            break;
+                        case HitType.GRAB:
+                            playAnimation(damageAnimations[3], true);
+                            break;
+                    }
+                }
+                root.removeData("EnemyAttackData");
+                root.addData("EnemyAttackData", attackData);
+                root.removeData("AttackState");
+                switch (attackData.GetMoveData.powerType)
+                {
+                    case PowerType.NORMAL:
+                        if (hitStunCrouch)
+                            root.addData("AttackState", AttackState.HIT_STUN_CROUCH);
+                        else
+                            root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
                         break;
-                    case HitType.OVERHEAD:
-                        playAnimation(damageAnimations[1], true);
+                    case PowerType.KNOCK_DOWN:
+                        root.addData("AttackState", AttackState.KNOCK_DOWN);
                         break;
-                    case HitType.LOW:
-                        playAnimation(damageAnimations[2], true);
+                    case PowerType.HARD_KNOCK_DOWN:
+                        root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
                         break;
-                    case HitType.GRAB:
-                        playAnimation(damageAnimations[3], true);
+                    case PowerType.GRAB:
+                        root.addData("AttackState", AttackState.GRABBED);
+                        attackData.NotifyOwnerAttackConnected();
                         break;
                 }
             }
-            root.removeData("EnemyAttackData");
-            root.addData("EnemyAttackData", attackData);
-            root.removeData("AttackState");
-            switch (attackData.GetMoveData.powerType)
+            else
             {
-                case PowerType.NORMAL:
-                    root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
-                    break;
-                case PowerType.KNOCK_DOWN:
-                    root.addData("AttackState", AttackState.KNOCK_DOWN);
-                    break;
-                case PowerType.HARD_KNOCK_DOWN:
-                    root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
-                    break;
-                case PowerType.GRAB:
-                    root.addData("AttackState", AttackState.GRABBED);
-                    attackData.NotifyOwnerAttackConnected();
-                    break;
+                //defended
+                Debug.Log("BLOCKED!!");
             }
             Debug.Log("GOT HIT " + transform.name + " " + curFrame);
             rb.velocity = Vector3.zero;

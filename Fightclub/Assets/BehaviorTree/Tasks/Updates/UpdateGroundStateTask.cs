@@ -11,12 +11,14 @@ namespace BehaviorTree
         Transform transform;
         Tree masterTree;
         AnimationClip landing;
-        public UpdateGroundStateTask(Tree masterTree, Rigidbody rb, Transform transform, AnimationClip landing) : base() 
+        int playerNum;
+        public UpdateGroundStateTask(Tree masterTree, Rigidbody rb, Transform transform, AnimationClip landing, int playerNum) : base() 
         {
             this.rb = rb;
             this.transform = transform;
             this.masterTree = masterTree;
             this.landing = landing;
+            this.playerNum = playerNum;
         }
 
         //Updates "GroundState" data
@@ -33,6 +35,7 @@ namespace BehaviorTree
             switch(currentGroundState)
             {
                 case GroundState.GROUNDED:
+                    updatePlayerLocalScale();
                     if (findData("StartUpJump") == null)
                     {
                         return NodeState.FAILURE;
@@ -56,6 +59,7 @@ namespace BehaviorTree
                     }
                     break;
                 case GroundState.AIRBORNE:
+                    updatePlayerLocalScale();
                     if (findData("RecoveryJump") == null)
                     {
                         //Debug.Log("Ground layer is number: " + LayerMask.GetMask("Ground")); //8
@@ -88,6 +92,29 @@ namespace BehaviorTree
                     break;
             }
             return NodeState.FAILURE;
+        }
+
+        void updatePlayerLocalScale()
+        {
+            if ((AttackState)findData("AttackState") == AttackState.NONE)
+            {
+                if (GameManager.Instance.getPlayer1FacingRight)
+                {
+                    Debug.Log("RIGHT face");
+                    if (playerNum == 1)
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
+                    else
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -1);
+                }
+                else if (!GameManager.Instance.getPlayer1FacingRight)
+                {
+                    Debug.Log("LEFT face");
+                    if (playerNum == 1)
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -1);
+                    else
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
+                }
+            }
         }
     }
 }

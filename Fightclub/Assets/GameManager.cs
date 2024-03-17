@@ -136,6 +136,7 @@ public class GameManager : MonoBehaviour
             if(secondPlayer != null)
                 secondPlayer.Evaluate();
             currentFrame++; 
+            trackPlayerFacing();
             float frameTime = 1f / 60f;
             float startTime = Time.time;
             // This loop waits until it's time to proceed to the next frame.
@@ -173,8 +174,14 @@ public class GameManager : MonoBehaviour
     void trackPlayerFacing()
     {
         if (firstPlayer.getTransform.position.x < secondPlayer.getTransform.position.x)
+        {
             player1LeftOfPlayer2 = true;
-        else if(firstPlayer.getTransform.position.x > secondPlayer.getTransform.position.x)
-            player1LeftOfPlayer2 = false;
+            //Debug.Log("right face");
+        }
+        else if (firstPlayer.getTransform.position.x > secondPlayer.getTransform.position.x)
+        {
+            player1LeftOfPlayer2 = false; 
+            //Debug.Log("left face");
+        }
     }
 }

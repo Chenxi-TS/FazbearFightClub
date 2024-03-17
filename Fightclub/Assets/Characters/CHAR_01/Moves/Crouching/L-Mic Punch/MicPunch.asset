@@ -15,7 +15,7 @@ MonoBehaviour:
   moveName: MicPunch
   type: 1
   hitType: 2
-  powerType: 1
+  powerType: 0
   inputNotations: Ld
   damage: 2
   blockDamage: 0.5

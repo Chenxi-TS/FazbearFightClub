@@ -16,6 +16,7 @@ namespace BehaviorTree
         int slot;
         AnimationClip forward;
         AnimationClip backward;
+        string name;
 
         public MoveTask(Rigidbody rb, int direction, float speed, string name, Tree masterTree, int slot, AnimationClip forward, AnimationClip backward) 
         {
@@ -27,6 +28,7 @@ namespace BehaviorTree
             this.slot = slot;
             this.forward = forward;
             this.backward = backward;
+            this.name = name;
         }
 
         public override NodeState Evaluate()
@@ -58,6 +60,7 @@ namespace BehaviorTree
                     removeData("MovementState");
                 root.addData("MovementState", MovementState.WALKING);
                 rb.velocity = new Vector3((float)findData("Speed") * direction, rb.velocity.y, 0);
+                Debug.Log(name);
                 playAnimation();
             }
 

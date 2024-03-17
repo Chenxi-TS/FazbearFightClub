@@ -15,7 +15,7 @@ MonoBehaviour:
   moveName: Speak Into the Mic
   type: 2
   hitType: 2
-  powerType: 1
+  powerType: 0
   inputNotations: Md
   damage: 85
   blockDamage: 2.5

@@ -7,11 +7,11 @@ namespace BehaviorTree
     public class UpdateHitTask : Node
     {
         Tree masterTree;
-        AnimationClip idle;
-        public UpdateHitTask(Tree masterTree, AnimationClip idle) : base()
+        List<AnimationClip> recoveryAnimations;
+        public UpdateHitTask(Tree masterTree, List<AnimationClip> recoveryAnimations) : base()
         { 
             this.masterTree = masterTree;
-            this.idle = idle;
+            this.recoveryAnimations = recoveryAnimations;
         }
         public override NodeState Evaluate()
         {
@@ -26,8 +26,10 @@ namespace BehaviorTree
             CurrentAttackData enemyAttackData = (CurrentAttackData)findData("EnemyAttackData");
             int startingFrame = enemyAttackData.GetStartingFrame;
             //check if defending here
+
             switch((AttackState)findData("AttackState"))
             {
+                case AttackState.HIT_STUN_CROUCH:
                 case AttackState.HIT_STUN_RECOVERY:
                     Debug.Log("HIT STUN: Stuned:" + (GameManager.Instance.GetCurrentFrame - startingFrame + 1) + ", Current: " + GameManager.Instance.GetCurrentFrame + " Start:" + startingFrame);
                     MoveData enemyMove = enemyAttackData.GetMoveData;
@@ -38,9 +40,25 @@ namespace BehaviorTree
                             ", STUNNED FOR: " + (enemyMove.activeFrames + enemyMove.recoveryFrames + enemyMove.hitAdvantage));
                         Debug.Log("RECOVERED FROM HIT STUN STATE");
 
+                        if((AttackState)root.findData("AttackState") == AttackState.HIT_STUN_CROUCH)
+                            masterTree.playAnimation(recoveryAnimations[3]);
+                        else
+                        {
+                            switch(enemyAttackData.GetMoveData.hitType)
+                            {
+                                case HitType.MID:
+                                    masterTree.playAnimation(recoveryAnimations[0]);
+                                    break;
+                                case HitType.OVERHEAD:
+                                    masterTree.playAnimation(recoveryAnimations[1]);
+                                    break;
+                                case HitType.LOW:
+                                    masterTree.playAnimation(recoveryAnimations[2]);
+                                    break;
+                            }
+                        }
                         removeData("AttackState");
                         root.addData("AttackState", AttackState.NONE);
-                        masterTree.playAnimation(idle);
                         return NodeState.FAILURE;
                     }
                     return NodeState.SUCCESS;
@@ -56,7 +74,7 @@ namespace BehaviorTree
                             + "\n RECOVERED ON FRAME: " + GameManager.Instance.GetCurrentFrame);
                         removeData("AttackState");
                         root.addData("AttackState", AttackState.NONE);
-                        masterTree.playAnimation(idle);
+                        //masterTree.playAnimation();
                         return NodeState.FAILURE;
                     }
                     break;
