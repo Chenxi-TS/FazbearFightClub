@@ -111,6 +111,7 @@ namespace BehaviorTree
             InputHandler inputManager = new InputHandler(this, characterMoveList);
             GameManager.Instance.SetPlayerHandler(playerSlotNumber, inputManager);
         }
+        //Hide Node Evaluate
         public virtual void Evaluate() { }
         public virtual Dictionary<int,List<string>> getQueuedActions(int numberOfFramesBack, int currentFrame)
         {
@@ -206,12 +207,13 @@ namespace BehaviorTree
             }
             //Debug.Log("queued action " + eventKey + " on frame " + curFrame);
         }
-        protected void gotHit(CurrentAttackData attackData)
+        protected void GotHit(CurrentAttackData attackData)
         {
-            bool hitStunCrouch = false;
             if (root == null)
                 root = findRoot();
+            DefenseState curDefenseState = (DefenseState)root.findData("DefenseState");
             int curFrame = GameManager.Instance.GetCurrentFrame;
+
             if (queuedActions.ContainsKey(curFrame))
             {
                 queuedActions[curFrame].Add("GOT HIT");
@@ -222,69 +224,96 @@ namespace BehaviorTree
                 gotHitAction.Add("GOT HIT");
                 queuedActions.Add(curFrame, gotHitAction);
             }
-            if ((DefenseState)root.findData("DefenseState") == DefenseState.NONE)
-            {
-                if ((GroundState)root.findData("GroundState") < GroundState.GROUNDED) //not grounded
-                {
-                    if ((AttackState)root.findData("AttackState") <= AttackState.RECOVERY)
-                        playAnimation(damageAnimations[3]); //"jump out of" got hit animation
-                    else
-                        playAnimation(damageAnimations[4]); //hit in air again, play different animation 
-                }
-                else if ((GroundState)root.findData("GroundState") == GroundState.CROUCHING)
-                {
-                    playAnimation(damageAnimations[5]); //crouch hit
-                    hitStunCrouch = true;
-                }
-                else
-                {
-                    switch (attackData.GetMoveData.hitType)
-                    {
-                        case HitType.MID:
-                            playAnimation(damageAnimations[0], true);
-                            break;
-                        case HitType.OVERHEAD:
-                            playAnimation(damageAnimations[1], true);
-                            break;
-                        case HitType.LOW:
-                            playAnimation(damageAnimations[2], true);
-                            break;
-                        case HitType.GRAB:
-                            playAnimation(damageAnimations[3], true);
-                            break;
-                    }
-                }
-                root.removeData("EnemyAttackData");
-                root.addData("EnemyAttackData", attackData);
-                root.removeData("AttackState");
-                switch (attackData.GetMoveData.powerType)
-                {
-                    case PowerType.NORMAL:
-                        if (hitStunCrouch)
-                            root.addData("AttackState", AttackState.HIT_STUN_CROUCH);
-                        else
-                            root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
-                        break;
-                    case PowerType.KNOCK_DOWN:
-                        root.addData("AttackState", AttackState.KNOCK_DOWN);
-                        break;
-                    case PowerType.HARD_KNOCK_DOWN:
-                        root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
-                        break;
-                    case PowerType.GRAB:
-                        root.addData("AttackState", AttackState.GRABBED);
-                        attackData.NotifyOwnerAttackConnected();
-                        break;
-                }
-            }
+            if (curDefenseState == DefenseState.NONE) //if not blocking
+                GotHitConnect(attackData);
             else
             {
                 //defended
                 Debug.Log("BLOCKED!!");
+                if((attackData.GetMoveData.hitType == HitType.OVERHEAD && curDefenseState == DefenseState.LOW_BLOCK) || 
+                    (attackData.GetMoveData.hitType == HitType.LOW && curDefenseState == DefenseState.HIGH_BLOCK) || attackData.GetMoveData.powerType == PowerType.GRAB)
+                {
+                    GotHitConnect(attackData);
+                }
+                else
+                {
+                    root.removeData("EnemyAttackData");
+                    root.addData("EnemyAttackData", attackData);
+                    root.removeData("AttackState");
+                    root.addData("AttackState", AttackState.BLOCK_STUN);
+                    if (curDefenseState == DefenseState.HIGH_BLOCK)
+                        playAnimation(damageAnimations[6]);
+                    else if (curDefenseState == DefenseState.LOW_BLOCK)
+                        playAnimation(damageAnimations[7]);
+                }
             }
             Debug.Log("GOT HIT " + transform.name + " " + curFrame);
             rb.velocity = Vector3.zero;
             GameManager.Instance.hitStop(.13f);
+        }
+        void GotHitConnect(CurrentAttackData attackData)
+        {
+            //We need to know to recover from the crouching animation later (to set AttackState.HIT_STUN_CROUCH)
+            bool hitStunCrouch = false;
+
+            //Hit in air
+            if ((GroundState)root.findData("GroundState") < GroundState.GROUNDED) 
+            {
+                if ((AttackState)root.findData("AttackState") <= AttackState.RECOVERY) //initial air hit animation
+                    playAnimation(damageAnimations[3]);
+                else
+                    playAnimation(damageAnimations[4]); //hit in air again, play different animation 
+            }
+            //Hit while crouching
+            else if ((GroundState)root.findData("GroundState") == GroundState.CROUCHING) 
+            {
+                playAnimation(damageAnimations[5]); 
+                hitStunCrouch = true;
+            }
+            //Hit while standing
+            else
+            {
+                switch (attackData.GetMoveData.hitType)
+                {
+                    case HitType.MID:
+                        playAnimation(damageAnimations[0], true);
+                        break;
+                    case HitType.OVERHEAD:
+                        playAnimation(damageAnimations[1], true);
+                        break;
+                    case HitType.LOW:
+                        playAnimation(damageAnimations[2], true);
+                        break;
+                    case HitType.GRAB:
+                        playAnimation(damageAnimations[3], true);
+                        break;
+                }
+            }
+            
+            root.removeData("EnemyAttackData");
+            root.addData("EnemyAttackData", attackData);
+            root.removeData("AttackState");
+            
+            //Put us in hitstun/hitrecovery
+            switch (attackData.GetMoveData.powerType)
+            {
+                case PowerType.NORMAL:
+                    if (hitStunCrouch) //(...so we know to recover from croching animation now)
+                        root.addData("AttackState", AttackState.HIT_STUN_CROUCH); 
+                    else
+                        root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
+                    break;
+                case PowerType.KNOCK_DOWN:
+                    root.addData("AttackState", AttackState.KNOCK_DOWN);
+                    break;
+                case PowerType.HARD_KNOCK_DOWN:
+                    root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
+                    break;
+                case PowerType.GRAB:
+                    root.addData("AttackState", AttackState.GRABBED);
+                    attackData.NotifyOwnerAttackConnected();
+                    break;
+            }
         }
         public virtual void HitConnected(MoveData connectedMove) { }
         string checkForDiagonals(string currentKey, string exisitingKey)

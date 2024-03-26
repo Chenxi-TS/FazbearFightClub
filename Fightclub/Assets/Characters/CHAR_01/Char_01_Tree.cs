@@ -167,7 +167,7 @@ namespace BehaviorTree
             if(value is string)
                 readCommands((string)value);
             if (value is CurrentAttackData)
-                gotHit((CurrentAttackData)value);
+                GotHit((CurrentAttackData)value);
         }
         public override void Evaluate()
         {

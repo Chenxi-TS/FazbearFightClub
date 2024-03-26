@@ -107,11 +107,15 @@ MonoBehaviour:
   - {fileID: 2724485855231828586, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   - {fileID: -6273788300344775975, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   - {fileID: 4726660167612607173, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
+  - {fileID: 1916340609697914348, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
+  - {fileID: 84613746255415725, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   recoveryAnimations:
   - {fileID: -7472524005851601702, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   - {fileID: 4342446065849406250, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   - {fileID: -4335699068315381958, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   - {fileID: 6899530431868214998, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
+  - {fileID: 7160038176811030597, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
+  - {fileID: -4047896865369863968, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
 --- !u!136 &2166782501045447149
 CapsuleCollider:
   m_ObjectHideFlags: 0
