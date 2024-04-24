@@ -1,8 +1,5 @@
-using BehaviorTree;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace BehaviorTree
@@ -27,7 +24,11 @@ namespace BehaviorTree
             if (actionsWithinBuffer.Count < 1)
             {
                 Debug.Log("block update count < 1");
-                root.removeData("DefenseState");
+                if ((DefenseState)findData("DefenseState") != DefenseState.NONE)
+                {
+                    root.removeData("DefenseState");
+                    root.addData("DefenseState", DefenseState.NONE);
+                }
                 return NodeState.FAILURE;
             }
             string currentAction = actionsWithinBuffer.First().Value[0].ToString();

@@ -30,7 +30,7 @@ public class hitBox : MonoBehaviour
                 return;
             }
             Debug.Log(hurtSubject + "HURT");
-            attackData = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, attackData.GetMoveData, attackData.GetHitbox, attackData.Projectile, moveUser);
+            attackData = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, attackData.GetMoveData, attackData.GetHitbox, attackData.Projectile, moveUser, attackData.Direction);
             hurtSubject.OnNotify(attackData);
         }
     }

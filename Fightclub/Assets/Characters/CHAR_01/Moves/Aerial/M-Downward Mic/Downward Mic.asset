@@ -19,9 +19,9 @@ MonoBehaviour:
   inputNotations: Md
   damage: 9
   blockDamage: 2.5
-  startUpFrames: 7
-  activeFrames: 4
-  recoveryFrames: 10
+  startUpFrames: 10
+  activeFrames: 3
+  recoveryFrames: 17
   grabRecovery: 0
   hitAdvantage: 9
   blockAdvantage: 0

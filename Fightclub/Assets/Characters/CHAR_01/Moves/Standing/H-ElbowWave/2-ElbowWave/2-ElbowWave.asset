@@ -23,8 +23,8 @@ MonoBehaviour:
   activeFrames: 2
   recoveryFrames: 24
   grabRecovery: 0
-  hitAdvantage: 10
-  blockAdvantage: 1
+  hitAdvantage: 19
+  blockAdvantage: -2
   specialCancelables: []
   moveAnimation: {fileID: 0}
   hitbox: {fileID: 8673233326130374880, guid: a95893015f675f54fae226779162225d, type: 3}

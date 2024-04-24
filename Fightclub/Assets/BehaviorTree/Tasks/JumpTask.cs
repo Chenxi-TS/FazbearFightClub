@@ -28,7 +28,7 @@ namespace BehaviorTree
 
             if (findData("StartUpJump") == null)
             {
-                root.addData("StartUpJump", new CurrentJumpData(GameManager.Instance.GetCurrentFrame, direction, 8, 30, jumpForce));
+                root.addData("StartUpJump", new CurrentJumpData(GameManager.Instance.GetCurrentFrame, direction, 1, 3, jumpForce));
                 masterTree.playAnimation(jumpUp);
                 return NodeState.SUCCESS;
             }

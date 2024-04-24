@@ -21,10 +21,10 @@ MonoBehaviour:
   blockDamage: 2
   startUpFrames: 14
   activeFrames: 3
-  recoveryFrames: 3
+  recoveryFrames: 0
   grabRecovery: 0
-  hitAdvantage: 8
-  blockAdvantage: 0
+  hitAdvantage: 19
+  blockAdvantage: -2
   specialCancelables:
   - {fileID: 11400000, guid: db0b91bd1e29275418bc0fba7986d1f6, type: 2}
   moveAnimation: {fileID: -5274577793118707457, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}

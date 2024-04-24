@@ -6,12 +6,16 @@ using UnityEngine;
 using UnityEngine.Android;
 using UnityEngine.PlayerLoop;
 
+[RequireComponent(typeof(ComboManager))]
 //Responsible for keeping track of what frame it currently is in a game round and calling InputHandler.ReadInput() for each player
 //StartRound() -> starts game round
 //SetPlayerHandler -> connects character InputHandlers to be read in Update()
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    ComboManager comboManager;
+    public ComboManager combo { get { return comboManager; } }
 
     public int updateFPS = 60;
     float updateInterval;
@@ -49,6 +53,8 @@ public class GameManager : MonoBehaviour
             DestroyImmediate(Instance);
         else if (Instance == null)
             Instance = this;
+
+        comboManager = GetComponent<ComboManager>();
     }
     private void Update()
     {
@@ -150,7 +156,8 @@ public class GameManager : MonoBehaviour
     IEnumerator RoundTimer(float roundDuration)
     {
         yield return new WaitForSeconds(roundDuration);
-        gaming = false;
+        if (roundDuration >= 0)
+            gaming = false;
         Debug.Log("Time Ran Out, Number of Frames: " + currentFrame);
         currentFrame = 0;
     }

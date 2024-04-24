@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using UnityEditor.Experimental.GraphView;
+
 using UnityEngine;
 
 namespace BehaviorTree
@@ -28,6 +25,7 @@ namespace BehaviorTree
             //move hitbox spawn
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
+            hitbox.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
             hitbox.transform.localPosition = Vector3.zero;
             hitbox.SetActive(false);
             hitbox.GetComponentInChildren<hitBox>().setUser(masterTree);
@@ -37,9 +35,13 @@ namespace BehaviorTree
                 projectileClone = MonoBehaviour.Instantiate(moveData.projectile);
                 projectileClone.transform.SetParent(transform);
                 projectileClone.SetActive(false);
+                hitbox.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
                 projectileClone.GetComponent<hitBox>().setUser(masterTree);
                 projectileClone.transform.SetParent(null);
             }
+
+            //change hitbox local transform base on where the player is facing
+            updateHitboxLocalScale(hitbox.transform);
         }
         //If this move is a Rekka (follow up move/multi hit move),
         //specify the prerequisite move
@@ -51,27 +53,33 @@ namespace BehaviorTree
             this.playerSlot = playerSlot;
             hitbox = MonoBehaviour.Instantiate(moveData.hitbox);
             hitbox.transform.SetParent(transform);
+            hitbox.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
             hitbox.transform.localPosition = Vector3.zero;
             hitbox.SetActive(false);
             hitbox.GetComponentInChildren<hitBox>().setUser(masterTree);
             this.prereqMove = prereqMove;
+            //change hitbox local transform base on where the player is facing
+            updateHitboxLocalScale(hitbox.transform);
         }
 
         public override NodeState Evaluate()
         {
             if (root == null)
+            {
                 root = findRoot();
+                Debug.Log("ATTACK ROOT " + root);
+            }
             //Checking status of "AttackState"
             //-> warns if "AttackState" is missing
             //-> warns if "AttackState" is not type of AttackState
             if (findData("AttackState") == null)
             {
-                Debug.LogError("AttackState data is not in tree");
+                Debug.Log("AttackState data is not in tree");
                 return NodeState.FAILURE;
             }
             if (findData("AttackState") is not AttackState)
             {
-                Debug.LogError("AttackState data in tree is not of type AttackState");
+                Debug.Log("AttackState data in tree is not of type AttackState");
                 return NodeState.FAILURE;
             }
 
@@ -154,13 +162,13 @@ namespace BehaviorTree
                 Debug.Log("GameManagerNULL");
             else if (moveData == null)
                 Debug.Log("moveDataNULL");
-            
-            //Stop momentum if grounded
-            if(groundState != GroundState.AIRBORNE)
-                rb.velocity = new Vector3 (0, rb.velocity.y, 0);
 
-            //change hitbox local transform base on where the player is facing
-            updateHitboxLocalScale(hitbox.transform);
+            //Stop momentum if grounded
+            if (groundState != GroundState.AIRBORNE)
+                rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            else if (groundState == GroundState.AIRBORNE)
+                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y/10, 0);
+
 
             //If this move includes a projectile
             //->set up projectile fire point position
@@ -174,7 +182,18 @@ namespace BehaviorTree
             //Create CurrentAttackData object
             //->set CurrentAttack data for the tree
             //->give CurrentAttack data for hitbox
-            CurrentAttackData curAttack = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox, projectile, masterTree);
+            int attackDirection = 1;
+            if(masterTree.getPlayerSlotNum == 1)
+            {
+                if(!GameManager.Instance.getPlayer1FacingRight)
+                    attackDirection = -1;
+            }
+            else if(masterTree.getPlayerSlotNum == 2)
+            {
+                if(GameManager.Instance.getPlayer1FacingRight)
+                    attackDirection = -1;
+            }
+            CurrentAttackData curAttack = new CurrentAttackData(GameManager.Instance.GetCurrentFrame, moveData, hitbox, projectile, masterTree, attackDirection);
             root.addData("CurrentAttack", curAttack);
             hitbox.GetComponentInChildren<hitBox>().setAttackData((CurrentAttackData)findData("CurrentAttack"));
 
@@ -194,17 +213,17 @@ namespace BehaviorTree
             {
                 Debug.Log("RIGHT face");
                 if (playerSlot == 1)
-                    hitbox.localScale = new Vector3(1, hitbox.localScale.y, hitbox.localScale.z);
+                    hitbox.localScale = new Vector3(1 * 2.5F, hitbox.localScale.y, hitbox.localScale.z);
                 else
-                    hitbox.localScale = new Vector3(-1, hitbox.localScale.y, hitbox.localScale.z);
+                    hitbox.localScale = new Vector3(-1 * 2.5F, hitbox.localScale.y, hitbox.localScale.z);
             }
             else if (!GameManager.Instance.getPlayer1FacingRight)
             {
                 Debug.Log("LEFT face");
                 if (playerSlot == 1)
-                    hitbox.localScale = new Vector3(-1, hitbox.localScale.y, hitbox.localScale.z);
+                    hitbox.localScale = new Vector3(-1 * 2.5F, hitbox.localScale.y, hitbox.localScale.z);
                 else
-                    hitbox.localScale = new Vector3(1, hitbox.localScale.y, hitbox.localScale.z);
+                    hitbox.localScale = new Vector3(1 * 2.5F, hitbox.localScale.y, hitbox.localScale.z);
             }
         }
     }

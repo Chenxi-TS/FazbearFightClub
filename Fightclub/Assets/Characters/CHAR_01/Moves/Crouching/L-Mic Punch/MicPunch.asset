@@ -19,12 +19,12 @@ MonoBehaviour:
   inputNotations: Ld
   damage: 2
   blockDamage: 0.5
-  startUpFrames: 3
-  activeFrames: 4
-  recoveryFrames: 2
+  startUpFrames: 12
+  activeFrames: 1
+  recoveryFrames: 19
   grabRecovery: 0
-  hitAdvantage: 9
-  blockAdvantage: -1
+  hitAdvantage: 5
+  blockAdvantage: -3
   specialCancelables: []
   moveAnimation: {fileID: 4314423745612021512, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 3560066588360184920, guid: 5eda7100ed2a1e440a5e6362a3d38ca8, type: 3}

@@ -57,7 +57,7 @@ namespace BehaviorTree
                         root.addData("AttackState", AttackState.RECOVERY);;
                         if (curAttack.Projectile != null)
                         {
-                            curAttack.Projectile.spawnProjectile(1, GameManager.Instance.GetCurrentFrame, masterTree);
+                            curAttack.Projectile.spawnProjectile(curAttack.Direction, GameManager.Instance.GetCurrentFrame, masterTree);
                         }
                         curAttack.GetHitbox.SetActive(false);
                     }

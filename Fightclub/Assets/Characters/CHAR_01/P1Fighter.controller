@@ -202,6 +202,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-7590383603491827748
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RIG_Freddy_ao|blockingcrouchhit
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 84613746255415725, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &-6771579142712171961
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1390,14 +1416,14 @@ AnimatorStateMachine:
     m_State: {fileID: 5979550443119977490}
     m_Position: {x: 710, y: 570, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 9004125859284842831}
-    m_Position: {x: 730, y: 760, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: -3310793417272661877}
     m_Position: {x: 710, y: 510, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5539795092519556418}
     m_Position: {x: 720, y: 700, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -7590383603491827748}
+    m_Position: {x: 720, y: 760, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -1639,29 +1665,3 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1102 &9004125859284842831
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: RIG_Freddy_ao|blockingstandhit 0
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 1916340609697914348, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 

@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.Connect;
+
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -28,12 +25,13 @@ public class Projectile : MonoBehaviour
     public void setSpawn(Transform firePoint)
     {
         this.firepoint = firePoint;
+        firepoint.transform.position = new Vector3(firepoint.transform.position.x, 1, firepoint.transform.position.z);
     }
     public virtual void spawnProjectile(int direction, int frameStarted, BehaviorTree.Tree moveUser)
     {
         rb = GetComponent<Rigidbody>();
         Debug.Log("firepoint",firepoint);
-        transform.position = firepoint.position;
+        transform.position = new Vector3(firepoint.transform.position.x, 4, firepoint.transform.position.z);
         transform.localScale = new Vector3(direction, transform.localScale.y, transform.localScale.z);
         this.frameStarted = frameStarted;
         this.moveUser = moveUser;

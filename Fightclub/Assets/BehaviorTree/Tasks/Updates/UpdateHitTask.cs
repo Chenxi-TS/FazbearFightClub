@@ -44,6 +44,7 @@ namespace BehaviorTree
                      */
                     if (GameManager.Instance.GetCurrentFrame - startingFrame + 1 >= (enemyMove.activeFrames + enemyMove.recoveryFrames + enemyMove.hitAdvantage))
                     {
+                        GameManager.Instance.combo.PlayerRecovered(masterTree.getPlayerSlotNum);
                         /*
                          *Debug.Log("HIT STUN Advantage: +" +  enemyMove.hitAdvantage + 
                          *    "\n RECOVERED ON FRAME:" + GameManager.Instance.GetCurrentFrame +
@@ -103,7 +104,7 @@ namespace BehaviorTree
                             masterTree.playAnimation(recoveryAnimations[5]);
                         else
                             masterTree.playAnimation(recoveryAnimations[4]);
-                        removeData("DefenseState");
+                        root.removeData("DefenseState");
                         root.addData("DefenseState", DefenseState.NONE);
                         return NodeState.FAILURE;
                     }

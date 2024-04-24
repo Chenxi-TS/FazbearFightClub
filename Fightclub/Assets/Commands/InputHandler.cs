@@ -1,10 +1,6 @@
 using BehaviorTree;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.Build;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 //Contains all Commands and respective KeyCode for a character
 //-> ReadInput() returns a list of Commands for all Commands executed on call

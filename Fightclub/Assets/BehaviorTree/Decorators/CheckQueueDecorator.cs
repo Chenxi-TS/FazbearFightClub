@@ -12,12 +12,20 @@ namespace BehaviorTree
         Tree masterTree;
         string inputNotations;
         int bufferFrames = 0;
+        bool translateMove = true;
 
         public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames) : base(childrenNodes)
         {
             this.masterTree = masterTree;
             this.inputNotations = inputNotations;
             this.bufferFrames = bufferFrames;
+        }
+        public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames, bool translateMove) : base(childrenNodes)
+        {
+            this.masterTree = masterTree;
+            this.inputNotations = inputNotations;
+            this.bufferFrames = bufferFrames;
+            this.translateMove = translateMove;
         }
         public override NodeState Evaluate()
         {
@@ -53,8 +61,10 @@ namespace BehaviorTree
                 {
                     foreach (string s in action.Value)
                     {
-                        if (inputNotationsArray[inputPointer] == s && action.Key >= lastFoundFrame)
+                        //translate inputnotationarray here
+                        if (inputNotationsArray[inputPointer] == translateForSideSwap(s) && action.Key >= lastFoundFrame)
                         {
+                            Debug.Log("PASSED " + s);
                             inputPointer++;
                             //so it stays in sequence of inputs
                             lastFoundFrame = action.Key;
@@ -73,12 +83,49 @@ namespace BehaviorTree
 
             return inputPointer;
         }
-        //just gets first frame? i forgot why i did it like this exactly, best to just leave it be i forgor whats happening x_x this is what i get for not commenting
+        //gets the frame when the first action within the buffer was pressed
         int getFirstFrame(Dictionary<int, List<string>> actionDictionary)
         {
             foreach (int frame in actionDictionary.Keys)
                 return frame;
             return -1;
+        }
+
+        string translateForSideSwap(string requiredKey)
+        {
+            if (!translateMove)
+                return requiredKey;
+            if (masterTree.getPlayerSlotNum == 1)
+            {
+                if (!GameManager.Instance.getPlayer1FacingRight)
+                    return sideSwapDictionary(requiredKey);
+            }
+            else if (masterTree.getPlayerSlotNum == 2)
+            {
+                if (GameManager.Instance.getPlayer1FacingRight)
+                    return sideSwapDictionary(requiredKey);
+            }
+            return requiredKey;
+        }
+        string sideSwapDictionary(string requiredKey)
+        {
+            Debug.Log(requiredKey + "TRANSLATE");
+            switch(requiredKey)
+            {
+                case "1":
+                    return "3";
+                case "3":
+                    return "1";
+                case "4":
+                    return "6";
+                case "6":
+                    return "4";
+                case "7":
+                    return "9";
+                case "9":
+                    return "7";
+            }
+            return requiredKey;
         }
     }
 }

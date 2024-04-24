@@ -75,7 +75,7 @@ namespace BehaviorTree
             if (nodeData.ContainsKey(key))
                 return;
             nodeData.Add(key, value);
-            //Debug.Log("Added data " + key);
+            Debug.LogWarning("Added data " + key);
         }
         protected Node findRoot()
         {

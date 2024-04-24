@@ -1,11 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build.Content;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UIElements;
 
 namespace BehaviorTree
 {
@@ -145,22 +139,23 @@ namespace BehaviorTree
                             //Jump
                             new Selector(new List<Node>
                             {
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 13, movementAnimations[2])}, this, "9", 0), //Jump right
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 13, movementAnimations[2]) }, this, "7", 0), //Jump left
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 13, movementAnimations[2]) }, this, "8", 0), //Jump up
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 18, movementAnimations[2])}, this, "9", 0, false), //Jump right
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 18, movementAnimations[2]) }, this, "7", 0, false), //Jump left
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 18, movementAnimations[2]) }, this, "8", 0, false), //Jump up
                                 
                             }),
                             //Left & Right
                             new Selector (new List<Node>
                             {
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left", this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "4", 0),
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right",this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "6", 0),
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left", this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "4", 0, false),
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right",this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "6", 0, false),
                                 new IdleTask(this, rb, movementAnimations[6]),
                             })
                         })
                     )
                 })
             });
+            root.addData("DefenseState", DefenseState.NONE);
         }
         void Observer.OnNotify(object value)
         {

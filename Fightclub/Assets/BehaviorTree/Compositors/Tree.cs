@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.UIElements.Experimental;
 
 namespace BehaviorTree
 {
@@ -57,6 +50,7 @@ namespace BehaviorTree
 
         protected int characterID;
         protected int playerSlotNum;
+        public int getPlayerSlotNum { get { return playerSlotNum; } }
         public int getcharacterID { get { return characterID; } }
 
         protected Rigidbody rb;
@@ -210,7 +204,22 @@ namespace BehaviorTree
         protected void GotHit(CurrentAttackData attackData)
         {
             if (root == null)
+            {
                 root = findRoot();
+                Debug.LogError(findRoot() + " root found");
+            }
+            if (root.findData("DefenseState") == null)
+            {
+                Debug.LogError("Root: " + root);
+                Debug.LogError("DefenseState data is not in tree");
+                root.addData("DefenseState", DefenseState.NONE);
+                return;
+            }
+            if (root.findData("DefenseState") is not DefenseState)
+            {
+                Debug.LogError("DefenseState data in tree is not of type DefenseState");
+                return;
+            }
             DefenseState curDefenseState = (DefenseState)root.findData("DefenseState");
             int curFrame = GameManager.Instance.GetCurrentFrame;
 
@@ -237,6 +246,13 @@ namespace BehaviorTree
                 }
                 else
                 {
+                    CurrentAttackData curAttack = null;
+                    if (root.findData("CurrentAttack") != null)
+                    {
+                        curAttack = (CurrentAttackData)root.findData("CurrentAttack");
+                        curAttack.GetHitbox.SetActive(false);
+                        root.removeData("CurrentAttack");
+                    }
                     root.removeData("EnemyAttackData");
                     root.addData("EnemyAttackData", attackData);
                     root.removeData("AttackState");
@@ -289,7 +305,13 @@ namespace BehaviorTree
                         break;
                 }
             }
-            
+            CurrentAttackData curAttack = null;
+            if (root.findData("CurrentAttack") != null)
+            {
+                curAttack = (CurrentAttackData)root.findData("CurrentAttack");
+                curAttack.GetHitbox.SetActive(false);
+                root.removeData("CurrentAttack");
+            }
             root.removeData("EnemyAttackData");
             root.addData("EnemyAttackData", attackData);
             root.removeData("AttackState");
@@ -314,6 +336,8 @@ namespace BehaviorTree
                     attackData.NotifyOwnerAttackConnected();
                     break;
             }
+
+            GameManager.Instance.combo.AHitConnected(playerSlotNum);
         }
         public virtual void HitConnected(MoveData connectedMove) { }
         string checkForDiagonals(string currentKey, string exisitingKey)
@@ -365,5 +389,6 @@ namespace BehaviorTree
             }
             return currentKey;
         }
+       
     }
 }
