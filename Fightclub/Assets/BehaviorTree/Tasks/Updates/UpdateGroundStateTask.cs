@@ -12,13 +12,15 @@ namespace BehaviorTree
         Tree masterTree;
         AnimationClip landing;
         int playerNum;
-        public UpdateGroundStateTask(Tree masterTree, Rigidbody rb, Transform transform, AnimationClip landing, int playerNum) : base() 
+        PhysicMaterial[] physMat;
+        public UpdateGroundStateTask(Tree masterTree, Rigidbody rb, Transform transform, AnimationClip landing, PhysicMaterial[] physMat, int playerNum) : base() 
         {
             this.rb = rb;
             this.transform = transform;
             this.masterTree = masterTree;
             this.landing = landing;
             this.playerNum = playerNum;
+            this.physMat = physMat;
         }
 
         //Updates "GroundState" data
@@ -54,8 +56,10 @@ namespace BehaviorTree
                     }
                     if (GameManager.Instance.GetCurrentFrame - currentJumpData.startFrame > currentJumpData.startUp + 2)
                     {
+                        //change material here
                         removeData("GroundState");
                         root.addData("GroundState", GroundState.AIRBORNE);
+                        masterTree.getTransform.GetComponent<SphereCollider>().material = physMat[1];
                     }
                     break;
                 case GroundState.AIRBORNE:
@@ -75,6 +79,7 @@ namespace BehaviorTree
                             removeData("GroundState");
                             root.addData("GroundState", GroundState.RECOVERY);
                             masterTree.playAnimation(landing);
+                            masterTree.getTransform.GetComponent<SphereCollider>().material = physMat[0];
                         }
                         else
                             Debug.DrawLine(transform.position, transform.position + transform.TransformDirection(Vector3.down) * 1.05f, Color.red);
@@ -89,6 +94,9 @@ namespace BehaviorTree
                             removeData("GroundState");
                             root.addData("GroundState", GroundState.GROUNDED);
                         }
+                    break;
+                case GroundState.CROUCHING:
+                    updatePlayerLocalScale();
                     break;
             }
             return NodeState.FAILURE;

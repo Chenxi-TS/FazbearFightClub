@@ -47,6 +47,7 @@ namespace BehaviorTree
         protected List<AnimationClip> movementAnimations;
         protected List<AnimationClip> damageAnimations;
         protected List<AnimationClip> recoveryAnimations;
+        protected PhysicMaterial[] physMat;
 
         protected int characterID;
         protected int playerSlotNum;

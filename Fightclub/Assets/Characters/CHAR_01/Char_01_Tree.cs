@@ -19,6 +19,7 @@ namespace BehaviorTree
             movementAnimations = moveListHolder.movementAnimations;
             damageAnimations = moveListHolder.damageAnimations;
             recoveryAnimations = moveListHolder.recoveryAnimations;
+            physMat = moveListHolder.physMatList;
 
             Debug.Log(this + " TREE");
 
@@ -79,7 +80,7 @@ namespace BehaviorTree
             {
                 new BurstTask(),
                 //Updates
-                new UpdateGroundStateTask(this, rb, transform, movementAnimations[3], playerSlotNumber),
+                new UpdateGroundStateTask(this, rb, transform, movementAnimations[3], physMat ,playerSlotNumber),
                 new CheckHitQueue(new List<Node>{new UpdateHitTask(this, recoveryAnimations)}, this),
                 new UpdateAttackStateTask(this),
                 new UpdateDefenseStateTask(this, playerSlotNumber),
@@ -140,9 +141,9 @@ namespace BehaviorTree
                             //Jump
                             new Selector(new List<Node>
                             {
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 18, movementAnimations[2])}, this, "9", 0, false), //Jump right
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 18, movementAnimations[2]) }, this, "7", 0, false), //Jump left
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 18, movementAnimations[2]) }, this, "8", 0, false), //Jump up
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 20, movementAnimations[2])}, this, "9", 0, false), //Jump right
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 20, movementAnimations[2]) }, this, "7", 0, false), //Jump left
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 20, movementAnimations[2]) }, this, "8", 0, false), //Jump up
                                 
                             }),
                             //Left & Right

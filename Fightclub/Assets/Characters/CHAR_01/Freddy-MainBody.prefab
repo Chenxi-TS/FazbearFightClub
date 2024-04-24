@@ -61,7 +61,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 2
 --- !u!114 &4087445068238247734
 MonoBehaviour:
@@ -117,6 +117,9 @@ MonoBehaviour:
   - {fileID: 6899530431868214998, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   - {fileID: 7160038176811030597, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   - {fileID: -4047896865369863968, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
+  physMatList:
+  - {fileID: 13400000, guid: 4e3a12dc6dcb73440857a97f3f0ede31, type: 2}
+  - {fileID: 13400000, guid: 6f0ae6cda08deef469d86e324891f35b, type: 2}
 --- !u!65 &8793777662527558831
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -157,8 +160,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.6974011
-  m_Center: {x: -0.022571623, y: 0.22601485, z: 9.871751e-17}
+  m_Radius: 1.1752934
+  m_Center: {x: -0.022571683, y: 0.70390725, z: 9.8718355e-17}
 --- !u!1001 &7393357884836123796
 PrefabInstance:
   m_ObjectHideFlags: 0
