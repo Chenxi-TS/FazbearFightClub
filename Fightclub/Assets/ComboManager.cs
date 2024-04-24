@@ -20,6 +20,8 @@ public class ComboManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (comboText == null)
+            return;
         if(comboHits > 0)
             comboText.text = comboHits.ToString() + " HIT";
         if (playerBeingCombo == 2)
@@ -30,6 +32,8 @@ public class ComboManager : MonoBehaviour
 
     public void AHitConnected(int playerHit)
     {
+        if (comboText == null)
+            return;
         if (playerBeingCombo != playerHit)
         {
             playerBeingCombo= playerHit;
@@ -44,6 +48,8 @@ public class ComboManager : MonoBehaviour
 
     public void PlayerRecovered(int playerRecovered)
     {
+        if (comboText == null)
+            return;
         if (playerRecovered != playerBeingCombo)
             return;
         Debug.Log("COMBO RECOVER");

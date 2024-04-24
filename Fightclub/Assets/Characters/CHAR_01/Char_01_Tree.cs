@@ -130,9 +130,10 @@ namespace BehaviorTree
                                 new CheckQueueDecorator(new List<Node>{ crouching}, this, "1", 0),
                                 new CheckQueueDecorator(new List<Node>{ crouching}, this, "3", 0)
                             })),
+                        
                         //Uncrouch
                         new CheckGroundStateDecorator(GroundState.CROUCHING,
-                            new CheckQueueDecorator(new List<Node>{ uncroucing}, this, UNCROUCHING.inputNotations, 0))
+                            new CheckQueueDecorator(new List<Node>{ uncroucing}, this, "!2,!1,!3,!2e,!1e,!3e", true, 0))
                     }),
                     new CheckGroundStateDecorator(GroundState.GROUNDED,
                         new Selector(new List<Node>{ //Movements

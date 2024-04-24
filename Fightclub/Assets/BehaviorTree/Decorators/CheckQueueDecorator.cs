@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.Rendering;
 
 namespace BehaviorTree
@@ -13,6 +15,7 @@ namespace BehaviorTree
         string inputNotations;
         int bufferFrames = 0;
         bool translateMove = true;
+        bool nonInputs = false;
 
         public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, int bufferFrames) : base(childrenNodes)
         {
@@ -26,6 +29,13 @@ namespace BehaviorTree
             this.inputNotations = inputNotations;
             this.bufferFrames = bufferFrames;
             this.translateMove = translateMove;
+        }
+        public CheckQueueDecorator(List<Node> childrenNodes, Tree masterTree, string inputNotations, bool nonInput, int bufferFrames): base(childrenNodes)
+        {
+            this.masterTree = masterTree;
+            this.inputNotations = inputNotations;
+            this.bufferFrames = bufferFrames;
+            this.nonInputs = nonInput;
         }
         public override NodeState Evaluate()
         {
@@ -42,16 +52,21 @@ namespace BehaviorTree
                 Debug.Log("CHECK ACTION NULL " + childrenNodes[0]);
                 return NodeState.FAILURE;
             }
-            int requiredInputsFound = checkRequiredInputs(actionsWithinBuffer, inputNotationsArray, 0, getFirstFrame(actionsWithinBuffer));
-            if (requiredInputsFound == inputNotationsArray.Length)
+            bool requiredInputsFound = false;
+            if(nonInputs)
+                requiredInputsFound = checkForNonInputs(actionsWithinBuffer, inputNotationsArray);
+            else
+                requiredInputsFound = checkRequiredInputs(actionsWithinBuffer, inputNotationsArray, getFirstFrame(actionsWithinBuffer));
+            if (requiredInputsFound)
                 return childrenNodes[0].Evaluate();
             else
             {
                 return NodeState.FAILURE;
             }
         }
-        int checkRequiredInputs(Dictionary<int, List<string>> actionsWithinBuffer, string[] inputNotationsArray, int inputPointer, int lastFoundFrame)
+        bool checkRequiredInputs(Dictionary<int, List<string>> actionsWithinBuffer, string[] inputNotationsArray, int lastFoundFrame)
         {
+            int inputPointer = 0;
             while (inputPointer < inputNotationsArray.Length)
             {
                 bool foundMatch = false;
@@ -74,14 +89,33 @@ namespace BehaviorTree
                     }
                     if (foundMatch) break;
                 }
-
                 if (!foundMatch)
                 {
                     break;
                 }
             }
-
-            return inputPointer;
+            if (inputPointer == inputNotationsArray.Length)
+                return true;
+            return false;
+        }
+        bool checkForNonInputs(Dictionary<int, List<string>> actionsWithinBuffer, string[] inputNotationsArray)
+        {
+            int pointer = 0;
+            foreach(KeyValuePair<int, List<string>> action in actionsWithinBuffer)
+            {
+                foreach(string s in action.Value)
+                {
+                    string nonInput = inputNotationsArray[pointer].ToCharArray()[1].ToString();
+                    Debug.Log("NON INPUT READING " + s + " vs. " + nonInput);
+                    if (s == nonInput)
+                    {
+                        return false;
+                    }
+                }
+                pointer++;
+            }
+            Debug.Log("NON INPUT, UNCROUCH " + pointer);
+            return true;
         }
         //gets the frame when the first action within the buffer was pressed
         int getFirstFrame(Dictionary<int, List<string>> actionDictionary)

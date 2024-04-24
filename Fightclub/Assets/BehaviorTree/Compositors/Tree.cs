@@ -199,6 +199,7 @@ namespace BehaviorTree
                 queuedActions.Add(curFrame, new List<string>());
                 queuedActions[curFrame].Add(eventKey);
             }
+            Debug.Log("READ KEY " + eventKey);
             //Debug.Log("queued action " + eventKey + " on frame " + curFrame);
         }
         protected void GotHit(CurrentAttackData attackData)
@@ -219,6 +220,16 @@ namespace BehaviorTree
             {
                 Debug.LogError("DefenseState data in tree is not of type DefenseState");
                 return;
+            }
+            if((AttackState)root.findData("AttackState") > AttackState.RECOVERY)
+            {
+                CurrentAttackData enemyAttack;
+                if ((CurrentAttackData)root.findData("EnemyAttackData") != null)
+                {
+                    enemyAttack = (CurrentAttackData)root.findData("EnemyAttackData");
+                    if (enemyAttack.GetMoveData.moveName == attackData.GetMoveData.moveName)
+                        return;
+                }
             }
             DefenseState curDefenseState = (DefenseState)root.findData("DefenseState");
             int curFrame = GameManager.Instance.GetCurrentFrame;
@@ -269,6 +280,7 @@ namespace BehaviorTree
         }
         void GotHitConnect(CurrentAttackData attackData)
         {
+            Debug.Log("HIT CONNECTED");
             //We need to know to recover from the crouching animation later (to set AttackState.HIT_STUN_CROUCH)
             bool hitStunCrouch = false;
 
