@@ -17,6 +17,7 @@ namespace BehaviorTree
         protected List<Node> childrenNodes = new List<Node>();
         protected Node parent = null;
         protected Node root = null;
+        public Node getRoot { get { return root; } }
         protected Dictionary<string, object> nodeData = new Dictionary<string, object>();
 
         public Node() {}

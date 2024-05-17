@@ -8,25 +8,28 @@ namespace BehaviorTree
     public class JumpTask : Node
     {
         Tree masterTree;
-        AnimationClip animation;
+        AnimationClip jumpUp;
 
         int direction;
         float jumpForce;
-        public JumpTask(Tree masterTree, int direction, float jumpForce) 
+        public JumpTask(Tree masterTree, int direction, float jumpForce, AnimationClip jumpUp) 
         { 
             this.masterTree = masterTree;
 
             this.direction = direction;
             this.jumpForce = jumpForce;
+
+            this.jumpUp = jumpUp;
         }
         public override NodeState Evaluate()
         {
+            Debug.Log("JUMP TASK REACHED");
             root = findRoot();
 
             if (findData("StartUpJump") == null)
             {
-                root.addData("StartUpJump", new CurrentJumpData(GameManager.Instance.GetCurrentFrame, direction, 8, 8, jumpForce));
-                masterTree.playAnimation(animation);
+                root.addData("StartUpJump", new CurrentJumpData(GameManager.Instance.GetCurrentFrame, direction, 8, 30, jumpForce));
+                masterTree.playAnimation(jumpUp);
                 return NodeState.SUCCESS;
             }
             return NodeState.FAILURE;

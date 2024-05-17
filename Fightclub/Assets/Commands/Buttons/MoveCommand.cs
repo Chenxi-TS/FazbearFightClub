@@ -9,8 +9,15 @@ public class MoveCommand :Command
     {
         this.movementNotation = movementNotation;
     }
-    override public void Execute()
+    public override void Execute()
     { 
         OnNotify(movementNotation.ToString());
+    }
+    public override void Execute(bool negativeEdge)
+    {
+        if(negativeEdge)
+            OnNotify(movementNotation.ToString() + "e");
+        else
+            OnNotify(movementNotation.ToString() + "d");
     }
 }

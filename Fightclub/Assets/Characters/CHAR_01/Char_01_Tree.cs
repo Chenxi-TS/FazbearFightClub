@@ -12,57 +12,72 @@ namespace BehaviorTree
     public class Char_01_Tree : Tree, Observer
     {
         //base sets up a new inputManager for this tree specifically and adds movement and attack buttons
-        public Char_01_Tree(int playerSlotNumber) : base(playerSlotNumber)
+        public Char_01_Tree(int playerSlotNumber, GameObject characterBody) : base(playerSlotNumber, characterBody)
         {
-            rb = GameManager.Instance.characters[0].GetComponent<Rigidbody>();
+            Debug.Log("CHAR 1 TREE MADE");
+            rb = characterBody.GetComponent<Rigidbody>();
             transform = rb.transform;
-            animator = transform.GetComponent<Animator>();
+            animator = transform.GetChild(0).GetComponent<Animator>();
+
+            MoveListHolder moveListHolder = characterBody.GetComponent<MoveListHolder>();
+            moveListHolder.masterTree = this;
+
+            movementAnimations = moveListHolder.movementAnimations;
+            damageAnimations = moveListHolder.damageAnimations;
+            recoveryAnimations = moveListHolder.recoveryAnimations;
+
+            Debug.Log(this + " TREE");
 
             #region ATTACKS
-            List<MoveData> moveList = GameManager.Instance.characters[0].GetComponent<MoveListHolder>().moveList;
+            List<MoveData> moveList = moveListHolder.moveList;
             //Light: Paw Punch
             MoveData PAW_PUNCH = moveList[0];
-            AttackTask pawPunch = new AttackTask(PAW_PUNCH, this, transform);
+            AttackTask pawPunch = new AttackTask(PAW_PUNCH, this, rb, transform, playerSlotNumber);
             //Medium: Hand-break
             MoveData HAND_BREAK = moveList[1];
-            AttackTask handBreak = new AttackTask(HAND_BREAK, this, transform);
+            AttackTask handBreak = new AttackTask(HAND_BREAK, this, rb, transform, playerSlotNumber);
             //Heavy: Elbow Wave
             MoveData ELBOW_WAVE = moveList[2];
-            AttackTask elbowWave = new AttackTask(ELBOW_WAVE, this, transform);
+            AttackTask elbowWave = new AttackTask(ELBOW_WAVE, this, rb, transform, playerSlotNumber);
             MoveData ELBOW_WAVE_2 = moveList[2].specialCancelables[0];
-            AttackTask elbowWave2 = new AttackTask(ELBOW_WAVE_2, this, transform, ELBOW_WAVE);
+            AttackTask elbowWave2 = new AttackTask(ELBOW_WAVE_2, this, rb, transform, ELBOW_WAVE, playerSlotNumber);
 
             //Crouching: Light: Mic Punch (Low)
             MoveData MIC_PUNCH = moveList[3];
-            AttackTask micPunch = new AttackTask(MIC_PUNCH, this, transform);
+            AttackTask micPunch = new AttackTask(MIC_PUNCH, this, rb, transform, playerSlotNumber);
             //Crouching: Medium: Speak Into the Mic (Low)
             MoveData SPEAK_MIC = moveList[4];
-            AttackTask speakMic = new AttackTask(SPEAK_MIC, this, transform);
+            AttackTask speakMic = new AttackTask(SPEAK_MIC, this, rb, transform, playerSlotNumber);
             //Crouching: Heavy: Bear Sweep (Low)
             MoveData BEAR_SWEEP = moveList[5];
-            AttackTask bearSweep = new AttackTask(BEAR_SWEEP, this, transform);
+            AttackTask bearSweep = new AttackTask(BEAR_SWEEP, this, rb, transform, playerSlotNumber);
 
             //Aerial: Light: Midair Punch (Overhead)
             MoveData MIDAIR_PUNCH = moveList[6];
-            AttackTask midairPunch = new AttackTask(MIDAIR_PUNCH, this, transform);
+            AttackTask midairPunch = new AttackTask(MIDAIR_PUNCH, this, rb, transform, playerSlotNumber);
             //Aerial: Medium: Downward Mic (Overhead)
             MoveData DOWNWARD_MIC = moveList[7];
-            AttackTask downwardMic = new AttackTask(DOWNWARD_MIC, this, transform);
+            AttackTask downwardMic = new AttackTask(DOWNWARD_MIC, this, rb, transform, playerSlotNumber);
             //Aerial: Heavy: Flat Footed Kick (Overhead)
             MoveData FLAT_FOOTED_KICK = moveList[8];
-            AttackTask flatFootedKick = new AttackTask(FLAT_FOOTED_KICK, this, transform);
+            AttackTask flatFootedKick = new AttackTask(FLAT_FOOTED_KICK, this, rb, transform, playerSlotNumber);
 
             //Command: Frame Bash
             MoveData FRAME_BASH = moveList[9];
-            AttackTask frameBash = new AttackTask(FRAME_BASH, this, transform);
+            AttackTask frameBash = new AttackTask(FRAME_BASH, this, rb, transform, playerSlotNumber);
             //Command: Grab: Power Outage
             MoveData GRAB = moveList[10];
-            AttackTask grab = new AttackTask(GRAB, this, transform);
+            AttackTask grab = new AttackTask(GRAB, this, rb, transform, playerSlotNumber);
 
             //Special: Weak Mic Throw
             MoveData WEAK_MIC_THROW = moveList[11];
-            AttackTask weakMicThrow = new AttackTask(WEAK_MIC_THROW,  this, transform);
-
+            AttackTask weakMicThrow = new AttackTask(WEAK_MIC_THROW,  this, rb, transform, playerSlotNumber);
+            
+            //Crouching
+            MoveData CROUCHING = moveList[12];
+            CrouchTask crouching = new CrouchTask(this, CROUCHING.moveAnimation, true);
+            MoveData UNCROUCHING = moveList[13];
+            CrouchTask uncroucing = new CrouchTask(this, UNCROUCHING.moveAnimation, false);
             #endregion
             //character tree below//
             root =
@@ -70,9 +85,10 @@ namespace BehaviorTree
             {
                 new BurstTask(),
                 //Updates
-                new UpdateGroundStateTask(rb, transform),
-                new UpdateHitTask(),
-                new UpdateAttackStateTask(),
+                new UpdateGroundStateTask(this, rb, transform, movementAnimations[3], playerSlotNumber),
+                new CheckHitQueue(new List<Node>{new UpdateHitTask(this, recoveryAnimations)}, this),
+                new UpdateAttackStateTask(this),
+                new UpdateDefenseStateTask(this, playerSlotNumber),
                 //Movements & Attacks
                 new Selector(new List<Node>
                 {
@@ -85,7 +101,7 @@ namespace BehaviorTree
                             {
                                 new CheckQueueDecorator(new List<Node>{ frameBash}, this, FRAME_BASH.inputNotations, 1),
                                 new CheckQueueDecorator(new List<Node>{ grab}, this, GRAB.inputNotations, 1),
-                                new CheckQueueDecorator(new List<Node>{ weakMicThrow}, this, WEAK_MIC_THROW.inputNotations, 6),
+                                new CheckQueueDecorator(new List<Node>{ weakMicThrow}, this, WEAK_MIC_THROW.inputNotations, 8),
 
                                 new CheckQueueDecorator(new List<Node>{ pawPunch}, this, PAW_PUNCH.inputNotations, 0),
                                 new CheckQueueDecorator(new List<Node>{ handBreak}, this, HAND_BREAK.inputNotations, 0),
@@ -112,34 +128,60 @@ namespace BehaviorTree
                             })
                         ),
                     }),
+                    //Crouch
+                    new Selector(new List<Node> {
+                        new CheckGroundStateDecorator(GroundState.GROUNDED,
+                            new Selector(new List<Node> {
+                                new CheckQueueDecorator(new List<Node>{ crouching}, this, "2", 0),
+                                new CheckQueueDecorator(new List<Node>{ crouching}, this, "1", 0),
+                                new CheckQueueDecorator(new List<Node>{ crouching}, this, "3", 0)
+                            })),
+                        //Uncrouch
+                        new CheckGroundStateDecorator(GroundState.CROUCHING,
+                            new CheckQueueDecorator(new List<Node>{ uncroucing}, this, UNCROUCHING.inputNotations, 0))
+                    }),
                     new CheckGroundStateDecorator(GroundState.GROUNDED,
                         new Selector(new List<Node>{ //Movements
-                            //Jump & Crouch
+                            //Jump
                             new Selector(new List<Node>
                             {
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 10)}, this, "9", 0), //Jump right
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 10)}, this, "7", 0), //Jump left
-                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 10)}, this, "8", 0), //Jump up
-                                //new CheckQueueDecorator(new List<Node>{ new }) CROUCH
-                                //Left & Right
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 1, 13, movementAnimations[2])}, this, "9", 0), //Jump right
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, -1, 13, movementAnimations[2]) }, this, "7", 0), //Jump left
+                                new CheckQueueDecorator(new List<Node>{ new JumpTask(this, 0, 13, movementAnimations[2]) }, this, "8", 0), //Jump up
+                                
                             }),
+                            //Left & Right
                             new Selector (new List<Node>
                             {
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left")}, this, "4", 0),
-                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right")}, this, "6", 0)
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, -1, 5, "Move Left", this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "4", 0),
+                                new CheckQueueDecorator(new List<Node>{ new MoveTask(rb, 1, 5, "Move Right",this, playerSlotNumber, movementAnimations[0], movementAnimations[1])}, this, "6", 0),
+                                new IdleTask(this, rb, movementAnimations[6]),
                             })
                         })
                     )
                 })
             });
         }
-        void Observer.OnNotify(string eventKey)
+        void Observer.OnNotify(object value)
         {
-            readCommands(eventKey);
+            if(value is string)
+                readCommands((string)value);
+            if (value is CurrentAttackData)
+                gotHit((CurrentAttackData)value);
         }
-        public override NodeState Evaluate()
+        public override void Evaluate()
         {
-            return root.Evaluate();
+            NodeState state = root.Evaluate();
+        }
+
+        public override void HitConnected(MoveData connectedMove)
+        {
+            if(connectedMove.powerType == PowerType.GRAB)
+            {
+                root.removeData("AttackState");
+                root.addData("AttackState", AttackState.GRABBING);
+                playAnimation(movementAnimations[7]);
+            }
         }
     }
 }

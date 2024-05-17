@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Flat Footed Kick
   type: 3
-  inputNotations: H
-  damage: 15
   hitType: 0
+  powerType: 0
+  inputNotations: Hd
+  damage: 15
   blockDamage: 7
   startUpFrames: 11
   activeFrames: 6
   recoveryFrames: 12
+  grabRecovery: 0
   hitAdvantage: 10
   blockAdvantage: 3
-  powerType: 0
   specialCancelables: []
-  moveAnimation: {fileID: 0}
+  moveAnimation: {fileID: 6960831790446028798, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 6887531075297646066, guid: f0cff173e4c76fb48bdf247a631d2dd4, type: 3}
+  projectile: {fileID: 0}

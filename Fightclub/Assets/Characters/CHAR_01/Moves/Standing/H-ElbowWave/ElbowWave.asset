@@ -14,17 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: ElbowWave
   type: 3
-  inputNotations: H
-  damage: 5
   hitType: 1
-  blockDamage: 2
-  startUpFrames: 6
-  activeFrames: 7
-  recoveryFrames: 1
-  hitAdvantage: 0
-  blockAdvantage: 0
   powerType: 0
+  inputNotations: Hd
+  damage: 5
+  blockDamage: 2
+  startUpFrames: 14
+  activeFrames: 3
+  recoveryFrames: 3
+  grabRecovery: 0
+  hitAdvantage: 8
+  blockAdvantage: 0
   specialCancelables:
   - {fileID: 11400000, guid: db0b91bd1e29275418bc0fba7986d1f6, type: 2}
-  moveAnimation: {fileID: 7400000, guid: 4431236b9a1e96b44add0e16b9ddb1fe, type: 2}
+  moveAnimation: {fileID: -5274577793118707457, guid: 2a30732daf9fa70408b9aa22a427eb95, type: 3}
   hitbox: {fileID: 2908484240896028646, guid: 3eb5bd4678a4eb248a1a04f7cbafdab3, type: 3}
+  projectile: {fileID: 0}

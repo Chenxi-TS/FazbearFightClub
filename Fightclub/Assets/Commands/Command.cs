@@ -5,4 +5,5 @@ using UnityEngine;
 public class Command: Subject
 {
     public virtual void Execute() { }
+    public virtual void Execute(bool negativeEdge) { }
 }

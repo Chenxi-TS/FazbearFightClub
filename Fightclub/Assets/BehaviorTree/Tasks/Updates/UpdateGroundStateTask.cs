@@ -9,10 +9,16 @@ namespace BehaviorTree
     {
         Rigidbody rb;
         Transform transform;
-        public UpdateGroundStateTask(Rigidbody rb, Transform transform) : base() 
+        Tree masterTree;
+        AnimationClip landing;
+        int playerNum;
+        public UpdateGroundStateTask(Tree masterTree, Rigidbody rb, Transform transform, AnimationClip landing, int playerNum) : base() 
         {
             this.rb = rb;
             this.transform = transform;
+            this.masterTree = masterTree;
+            this.landing = landing;
+            this.playerNum = playerNum;
         }
 
         //Updates "GroundState" data
@@ -29,6 +35,7 @@ namespace BehaviorTree
             switch(currentGroundState)
             {
                 case GroundState.GROUNDED:
+                    updatePlayerLocalScale();
                     if (findData("StartUpJump") == null)
                     {
                         return NodeState.FAILURE;
@@ -40,6 +47,7 @@ namespace BehaviorTree
                     currentJumpData = (CurrentJumpData)findData("StartUpJump"); 
                     if (GameManager.Instance.GetCurrentFrame - currentJumpData.startFrame > currentJumpData.startUp)
                     {
+                        rb.AddForce(currentJumpData.force * new Vector3(currentJumpData.direction * .5f, 1, 0), ForceMode.Impulse);
                         rb.velocity = new Vector3(currentJumpData.direction * .5f, 1, 0) * currentJumpData.force;
                         removeData("GroundState");
                         root.addData("GroundState", GroundState.START_UP);
@@ -51,6 +59,7 @@ namespace BehaviorTree
                     }
                     break;
                 case GroundState.AIRBORNE:
+                    updatePlayerLocalScale();
                     if (findData("RecoveryJump") == null)
                     {
                         //Debug.Log("Ground layer is number: " + LayerMask.GetMask("Ground")); //8
@@ -65,6 +74,7 @@ namespace BehaviorTree
                             addData("RecoveryJump", currentJumpData);
                             removeData("GroundState");
                             root.addData("GroundState", GroundState.RECOVERY);
+                            masterTree.playAnimation(landing);
                         }
                         else
                             Debug.DrawLine(transform.position, transform.position + transform.TransformDirection(Vector3.down) * 1.05f, Color.red);
@@ -82,6 +92,29 @@ namespace BehaviorTree
                     break;
             }
             return NodeState.FAILURE;
+        }
+
+        void updatePlayerLocalScale()
+        {
+            if ((AttackState)findData("AttackState") == AttackState.NONE)
+            {
+                if (GameManager.Instance.getPlayer1FacingRight)
+                {
+                    Debug.Log("RIGHT face");
+                    if (playerNum == 1)
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
+                    else
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -1);
+                }
+                else if (!GameManager.Instance.getPlayer1FacingRight)
+                {
+                    Debug.Log("LEFT face");
+                    if (playerNum == 1)
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -1);
+                    else
+                        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
+                }
+            }
         }
     }
 }

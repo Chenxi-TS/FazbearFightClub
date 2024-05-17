@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface Observer
 {
-    void OnNotify(string eventKey) { }
+    void OnNotify(object value) { }
 }

@@ -4,49 +4,70 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.UIElements.Experimental;
 
 namespace BehaviorTree
 {
     public enum GroundState
     {
-        GROUNDED,
         START_UP,
         AIRBORNE,
+        RECOVERY,
+        GROUNDED,
         CROUCHING,
-        RECOVERY
+    }
+    public enum MovementState
+    {
+        NONE,
+        WALKING,
+        UNCROUCHING
     }
     public enum AttackState
     {
-        NONE,
+        //Attacking
+        NONE = 0,
         START_UP,
         ACTIVE,
-        RECOVERY,
-        HIT_STUN, //move these to a enum later
+        GRABBING,
+        RECOVERY = 4, 
+        //damn the enemy got hands
         HIT_STUN_RECOVERY,
+        HIT_STUN_CROUCH,
         KNOCK_DOWN,
         HARD_KNOCK_DOWN,
+        GRABBED,
+        BLOCK_STUN
     }
     public enum DefenseState
     {
         NONE,
         HIGH_BLOCK,
-        MID_BLOCK,
         LOW_BLOCK,
     }
 
     public class Tree : Node, Observer
     {
         public List<MoveData> allMoves;
+        protected List<AnimationClip> movementAnimations;
+        protected List<AnimationClip> damageAnimations;
+        protected List<AnimationClip> recoveryAnimations;
+
+        protected int characterID;
+        protected int playerSlotNum;
+        public int getcharacterID { get { return characterID; } }
 
         protected Rigidbody rb;
         protected Transform transform;
+        public Transform getTransform { get { return transform; } }
         protected Animator animator;
 
         protected Dictionary<KeyCode, Command> characterMoveList = new Dictionary<KeyCode, Command>();
         protected Dictionary<int, List<string>> queuedActions = new Dictionary<int, List<string>>();
 
-        public Tree(int playerSlotNumber)
+        public Tree(int playerSlotNumber, GameObject characterBody)
         {
             characterMoveList.Clear();
             //movement
@@ -59,6 +80,7 @@ namespace BehaviorTree
             AttackCommand MediumAttack = new AttackCommand(AttackCommand.AttackButtons.MEDIUM);
             AttackCommand HeavyAttack = new AttackCommand(AttackCommand.AttackButtons.HEAVY);
 
+            this.playerSlotNum = playerSlotNumber;
             if (playerSlotNumber == 1)
             {
                 Debug.Log("player 1 tree created");
@@ -89,29 +111,32 @@ namespace BehaviorTree
             InputHandler inputManager = new InputHandler(this, characterMoveList);
             GameManager.Instance.SetPlayerHandler(playerSlotNumber, inputManager);
         }
-        public virtual List<string> getQueuedActions(int numberOfFramesBack, int currentFrame)
+        public virtual void Evaluate() { }
+        public virtual Dictionary<int,List<string>> getQueuedActions(int numberOfFramesBack, int currentFrame)
         {
-            List<string> allQueuedActions = new List<string>();
+            Dictionary<int, List<string>> allQueuedActions = new Dictionary<int, List<string>>();
             if (currentFrame - numberOfFramesBack < 0)
             {
                 return null;
-            }
-            if (numberOfFramesBack == 0)
-            {
-                if (queuedActions.ContainsKey(currentFrame))
-                {
-                    foreach (string s in queuedActions[currentFrame])
-                        allQueuedActions.Add(s);
-
-                    return allQueuedActions;
-                }
             }
             for (int i = currentFrame - numberOfFramesBack; i <= currentFrame; i++)
             {
                 if (queuedActions.ContainsKey(i))
                 {
-                    foreach(string s in queuedActions[i])
-                        allQueuedActions.Add(s);
+                    foreach (string s in queuedActions[i])
+                    {
+                        string[] stringArray = s.Split(",");
+                        foreach (string sa in stringArray)
+                        {
+                            if (allQueuedActions.ContainsKey(i))
+                                allQueuedActions[i].Add(sa);
+                            else
+                            {
+                                allQueuedActions.Add(i, new List<string>()); 
+                                allQueuedActions[i].Add(sa);
+                            }
+                        }
+                    }
                 }
             }
             return allQueuedActions;
@@ -128,9 +153,31 @@ namespace BehaviorTree
             }
             catch (Exception e)
             {
+                Debug.Log("NOT PLAYING ANIMATION");
                 Debug.LogException(e);
                 return;
             }
+        }
+        public virtual void playAnimation(AnimationClip animation, bool force)
+        {
+            if (animation == null)
+                return;
+            if (animator == null)
+                return;
+            try
+            {
+                animator.Play(animation.name, 0, 0);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("NOT PLAYING ANIMATION");
+                Debug.LogException(e);
+                return;
+            }
+        }
+        public void resetAnimation()
+        {
+            animator.Rebind();
         }
         protected void readCommands(string eventKey)
         {
@@ -159,6 +206,87 @@ namespace BehaviorTree
             }
             //Debug.Log("queued action " + eventKey + " on frame " + curFrame);
         }
+        protected void gotHit(CurrentAttackData attackData)
+        {
+            bool hitStunCrouch = false;
+            if (root == null)
+                root = findRoot();
+            int curFrame = GameManager.Instance.GetCurrentFrame;
+            if (queuedActions.ContainsKey(curFrame))
+            {
+                queuedActions[curFrame].Add("GOT HIT");
+            }
+            else
+            {
+                List<string> gotHitAction = new List<string>();
+                gotHitAction.Add("GOT HIT");
+                queuedActions.Add(curFrame, gotHitAction);
+            }
+            if ((DefenseState)root.findData("DefenseState") == DefenseState.NONE)
+            {
+                if ((GroundState)root.findData("GroundState") < GroundState.GROUNDED) //not grounded
+                {
+                    if ((AttackState)root.findData("AttackState") <= AttackState.RECOVERY)
+                        playAnimation(damageAnimations[3]); //"jump out of" got hit animation
+                    else
+                        playAnimation(damageAnimations[4]); //hit in air again, play different animation 
+                }
+                else if ((GroundState)root.findData("GroundState") == GroundState.CROUCHING)
+                {
+                    playAnimation(damageAnimations[5]); //crouch hit
+                    hitStunCrouch = true;
+                }
+                else
+                {
+                    switch (attackData.GetMoveData.hitType)
+                    {
+                        case HitType.MID:
+                            playAnimation(damageAnimations[0], true);
+                            break;
+                        case HitType.OVERHEAD:
+                            playAnimation(damageAnimations[1], true);
+                            break;
+                        case HitType.LOW:
+                            playAnimation(damageAnimations[2], true);
+                            break;
+                        case HitType.GRAB:
+                            playAnimation(damageAnimations[3], true);
+                            break;
+                    }
+                }
+                root.removeData("EnemyAttackData");
+                root.addData("EnemyAttackData", attackData);
+                root.removeData("AttackState");
+                switch (attackData.GetMoveData.powerType)
+                {
+                    case PowerType.NORMAL:
+                        if (hitStunCrouch)
+                            root.addData("AttackState", AttackState.HIT_STUN_CROUCH);
+                        else
+                            root.addData("AttackState", AttackState.HIT_STUN_RECOVERY);
+                        break;
+                    case PowerType.KNOCK_DOWN:
+                        root.addData("AttackState", AttackState.KNOCK_DOWN);
+                        break;
+                    case PowerType.HARD_KNOCK_DOWN:
+                        root.addData("AttackState", AttackState.HARD_KNOCK_DOWN);
+                        break;
+                    case PowerType.GRAB:
+                        root.addData("AttackState", AttackState.GRABBED);
+                        attackData.NotifyOwnerAttackConnected();
+                        break;
+                }
+            }
+            else
+            {
+                //defended
+                Debug.Log("BLOCKED!!");
+            }
+            Debug.Log("GOT HIT " + transform.name + " " + curFrame);
+            rb.velocity = Vector3.zero;
+            GameManager.Instance.hitStop(.13f);
+        }
+        public virtual void HitConnected(MoveData connectedMove) { }
         string checkForDiagonals(string currentKey, string exisitingKey)
         {
             bool up = false;
@@ -202,7 +330,10 @@ namespace BehaviorTree
             else if (down && left)
                 return "1";
             else if (down & right)
+            {
+                Debug.Log("RETURNS 3");
                 return "3";
+            }
             return currentKey;
         }
     }

@@ -6,6 +6,9 @@ using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
+//Contains all Commands and respective KeyCode for a character
+//-> ReadInput() returns a list of Commands for all Commands executed on call
+//-> StartChangeCommand(Command commandToChange) changes respective KeyCode for a command
 public class InputHandler
 {
     Dictionary<KeyCode, Command> keyToCommand = new Dictionary<KeyCode, Command>();
@@ -13,6 +16,7 @@ public class InputHandler
     Command commandToChangeKeyCode = null;
     bool awaitingNextInput = false;
 
+    //Sets up Command to respective KeyCode and adds respective tree to (subject)Command's list of observers
     public InputHandler(Node tree, Dictionary<KeyCode, Command> characterCommandList)
     {
         foreach(KeyValuePair<KeyCode, Command> ktc in characterCommandList)
@@ -22,12 +26,24 @@ public class InputHandler
             Debug.Log("Added " + ktc.Value + " for " + tree);
         }
     }
+
+    //Goes through every entry in keyToCommand dictionary. Checking if there is an input equivalent to a entry's key and
+    //executing the Command base on if the input was pressed, held, or released.
+    //->Execute(false) = pressed
+    //->Execute() = held
+    //->Execute(true) = released
     public List<Command> ReadInput()
     {
         //Debug.Log("Reading Input");
         List<Command> inputCommands = new List<Command>();
         foreach (KeyValuePair<KeyCode, Command> pair in keyToCommand)
         {
+            if(Input.GetKeyDown(pair.Key))
+            {
+                //Debug.Log("DOWN");
+                inputCommands.Add(pair.Value);
+                pair.Value.Execute(false);
+            }
             if(Input.GetKey(pair.Key))
             {
                 inputCommands.Add(pair.Value);
@@ -35,12 +51,15 @@ public class InputHandler
             }
             if(Input.GetKeyUp(pair.Key))
             {
+                //Debug.Log("UP");
                 inputCommands.Add(pair.Value);
-                pair.Value.Execute();
+                pair.Value.Execute(true);
             }
         }
         return inputCommands;
     }
+
+    //Start listening for input to change KeyCode to Command relationship in keyToCommand dictionary
     public void StartChangeComannd(Command commandToChange)
     {
         if (commandToChange == null)
@@ -51,19 +70,7 @@ public class InputHandler
         this.commandToChangeKeyCode = commandToChange;
         awaitingNextInput = true;
     }
-    void Update()
-    {
-        if (awaitingNextInput)
-        {
-            KeyCode newKey = ReadAnyNextInput();
-            if (newKey != KeyCode.None)
-            {
-                ChangeCommand(commandToChangeKeyCode, newKey);
-                commandToChangeKeyCode = null;
-                awaitingNextInput = false;
-            }
-        }
-    }
+    //Returns any next KeyCode pressed
     KeyCode ReadAnyNextInput()
     { 
         foreach(KeyCode key in System.Enum.GetValues(typeof(KeyCode)))
@@ -73,6 +80,8 @@ public class InputHandler
         }
         return KeyCode.None;
     }
+    //Removes targettedCommand in keyToCommand dictionary and
+    //adds a new entry with newKey as the key and targettedCommand as the new value.
     void ChangeCommand(Command targettedCommand, KeyCode newKey)
     {
         foreach(KeyValuePair<KeyCode, Command> pair in keyToCommand)
@@ -87,6 +96,20 @@ public class InputHandler
             {
                 keyToCommand.Remove(pair.Key);
                 keyToCommand.Add(newKey, targettedCommand);
+            }
+        }
+    }
+    //Waiting for input to change KeyCode to respective Command
+    void Update()
+    {
+        if (awaitingNextInput)
+        {
+            KeyCode newKey = ReadAnyNextInput();
+            if (newKey != KeyCode.None)
+            {
+                ChangeCommand(commandToChangeKeyCode, newKey);
+                commandToChangeKeyCode = null;
+                awaitingNextInput = false;
             }
         }
     }
