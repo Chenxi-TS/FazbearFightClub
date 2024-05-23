@@ -158,7 +158,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(roundDuration);
         if (roundDuration >= 0)
             gaming = false;
-        Debug.Log("Time Ran Out, Number of Frames: " + currentFrame);
+        //Debug.Log("Time Ran Out, Number of Frames: " + currentFrame);
         currentFrame = 0;
     }
 
@@ -173,7 +173,7 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator hitStun(float hitStopTime)
     {
-        Time.timeScale = .1f;
+        Time.timeScale = .02f;
         yield return new WaitForSecondsRealtime(hitStopTime);
         Time.timeScale = 1;
     }

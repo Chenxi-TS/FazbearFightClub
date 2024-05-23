@@ -28,7 +28,7 @@ namespace BehaviorTree
                 removeData("GroundState");
                 root.addData("GroundState", GroundState.GROUNDED);
                 masterTree.playAnimation(animation);
-                Debug.Log("UNCROUCH" + GameManager.Instance.GetCurrentFrame);
+                //Debug.Log("UNCROUCH" + GameManager.Instance.GetCurrentFrame);
                 return NodeState.FAILURE;
             }
             else if(state == GroundState.GROUNDED && crouch)
@@ -36,7 +36,7 @@ namespace BehaviorTree
                 removeData("GroundState");
                 root.addData("GroundState", GroundState.CROUCHING);
                 masterTree.playAnimation(animation);
-                Debug.Log("CROUCH " +GameManager.Instance.GetCurrentFrame);
+                //Debug.Log("CROUCH " +GameManager.Instance.GetCurrentFrame);
                 return NodeState.SUCCESS;
             }
             return NodeState.FAILURE;

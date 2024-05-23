@@ -34,9 +34,9 @@ namespace BehaviorTree
             MoveData curAttackData = curAttack.GetMoveData;
             int frameAttackStarted = curAttack.GetStartingFrame;
 
-            Debug.Log("CURRENT ATTACK: " + curAttackData.moveName + "\n" + 
+            /*Debug.Log("CURRENT ATTACK: " + curAttackData.moveName + "\n" + 
                 "CURRENT FRAME: " + (GameManager.Instance.GetCurrentFrame) + ", Frame Started:" + frameAttackStarted + 
-            "(" + (AttackState)findData("AttackState") + ")");
+            "(" + (AttackState)findData("AttackState") + ")");*/
 
             switch ((AttackState)findData("AttackState"))
             {

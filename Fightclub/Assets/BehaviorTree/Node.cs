@@ -27,14 +27,14 @@ namespace BehaviorTree
             {
                 this.childrenNodes.Add(child);
                 child.SetParent(this);
-                Debug.Log(child + "'s parent is " + child.parent);
+                //Debug.Log(child + "'s parent is " + child.parent);
             }
         }
         public Node(Node child)
         {
             this.childrenNodes.Add(child);
             child.SetParent(this);
-            Debug.Log(child + "'s parent is " + child.parent);
+            //Debug.Log(child + "'s parent is " + child.parent);
         }
         public void SetParent(Node parent)
         {
@@ -75,7 +75,7 @@ namespace BehaviorTree
             if (nodeData.ContainsKey(key))
                 return;
             nodeData.Add(key, value);
-            Debug.LogWarning("Added data " + key);
+            //Debug.LogWarning("Added data " + key);
         }
         protected Node findRoot()
         {
@@ -97,13 +97,13 @@ namespace BehaviorTree
             //Debug.Log(root);
             if (findData(dataKey) == null)
             {
-                Debug.LogWarning(dataKey + " data not found");
+                //Debug.LogWarning(dataKey + " data not found");
                 root.addData(dataKey, defaultData);
                 return false;
             }
             if (findData(dataKey).GetType() != defaultData.GetType())
             {
-                Debug.LogError(dataKey + " data in tree is not of type " + defaultData.GetType());
+                //Debug.LogError(dataKey + " data in tree is not of type " + defaultData.GetType());
                 return false;
             }
             return true;

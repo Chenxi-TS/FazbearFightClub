@@ -81,8 +81,8 @@ namespace BehaviorTree
                             masterTree.playAnimation(landing);
                             masterTree.getTransform.GetComponent<SphereCollider>().material = physMat[0];
                         }
-                        else
-                            Debug.DrawLine(transform.position, transform.position + transform.TransformDirection(Vector3.down) * 1.05f, Color.red);
+                        //else
+                            //Debug.DrawLine(transform.position, transform.position + transform.TransformDirection(Vector3.down) * 1.05f, Color.red);
                     }
                     break;
                 case GroundState.RECOVERY:
@@ -108,7 +108,7 @@ namespace BehaviorTree
             {
                 if (GameManager.Instance.getPlayer1FacingRight)
                 {
-                    Debug.Log("RIGHT face");
+                    //Debug.Log("RIGHT face");
                     if (playerNum == 1)
                         transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
                     else
@@ -116,7 +116,7 @@ namespace BehaviorTree
                 }
                 else if (!GameManager.Instance.getPlayer1FacingRight)
                 {
-                    Debug.Log("LEFT face");
+                    //Debug.Log("LEFT face");
                     if (playerNum == 1)
                         transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -1);
                     else

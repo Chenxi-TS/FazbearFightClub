@@ -23,7 +23,7 @@ namespace BehaviorTree
             Dictionary<int, List<string>> actionsWithinBuffer = masterTree.getQueuedActions(0, GameManager.Instance.GetCurrentFrame);
             if (actionsWithinBuffer.Count < 1)
             {
-                Debug.Log("block update count < 1");
+                //Debug.Log("block update count < 1");
                 if ((DefenseState)findData("DefenseState") != DefenseState.NONE)
                 {
                     root.removeData("DefenseState");
@@ -32,7 +32,7 @@ namespace BehaviorTree
                 return NodeState.FAILURE;
             }
             string currentAction = actionsWithinBuffer.First().Value[0].ToString();
-            Debug.Log(currentAction + " block check");
+            //Debug.Log(currentAction + " block check");
             if (playerSlotNum == 1)
             {
                 checkIfblocking(GameManager.Instance.getPlayer1FacingRight, currentAction);

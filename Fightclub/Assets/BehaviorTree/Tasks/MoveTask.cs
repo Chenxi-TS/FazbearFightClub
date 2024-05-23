@@ -35,7 +35,7 @@ namespace BehaviorTree
         {
             if (root == null)
                 root = findRoot();
-            Debug.Log("move task reached " + moveName);
+            //Debug.Log("move task reached " + moveName);
             if (findData("Speed") == null)
             {
                 Debug.LogWarning("Speed data not found");
@@ -60,7 +60,7 @@ namespace BehaviorTree
                     removeData("MovementState");
                 root.addData("MovementState", MovementState.WALKING);
                 rb.velocity = new Vector3((float)findData("Speed") * direction, rb.velocity.y, 0);
-                Debug.Log(name);
+                //Debug.Log(name);
                 playAnimation();
             }
 

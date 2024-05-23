@@ -10,7 +10,7 @@ public class hitBox : MonoBehaviour
     public void setUser(BehaviorTree.Tree user)
     {
         moveUser = user;
-        Debug.Log("USER IS " + user);
+        //Debug.Log("USER IS " + user);
     }
     public void setAttackData(CurrentAttackData attackData)
     {

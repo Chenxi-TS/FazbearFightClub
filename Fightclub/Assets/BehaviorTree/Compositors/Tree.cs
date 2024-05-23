@@ -78,7 +78,7 @@ namespace BehaviorTree
             this.playerSlotNum = playerSlotNumber;
             if (playerSlotNumber == 1)
             {
-                Debug.Log("player 1 tree created");
+                //Debug.Log("player 1 tree created");
                 #region PLAYER 1
                 characterMoveList.Add(KeyCode.W, jump);
                 characterMoveList.Add(KeyCode.A, moveLeft);
@@ -149,8 +149,8 @@ namespace BehaviorTree
             }
             catch (Exception e)
             {
-                Debug.Log("NOT PLAYING ANIMATION");
-                Debug.LogException(e);
+                //Debug.Log("NOT PLAYING ANIMATION");
+                //Debug.LogException(e);
                 return;
             }
         }
@@ -166,8 +166,8 @@ namespace BehaviorTree
             }
             catch (Exception e)
             {
-                Debug.Log("NOT PLAYING ANIMATION");
-                Debug.LogException(e);
+                //Debug.Log("NOT PLAYING ANIMATION");
+                //Debug.LogException(e);
                 return;
             }
         }
@@ -200,7 +200,7 @@ namespace BehaviorTree
                 queuedActions.Add(curFrame, new List<string>());
                 queuedActions[curFrame].Add(eventKey);
             }
-            Debug.Log("READ KEY " + eventKey);
+            //Debug.Log("READ KEY " + eventKey);
             //Debug.Log("queued action " + eventKey + " on frame " + curFrame);
         }
         protected void GotHit(CurrentAttackData attackData)
@@ -208,18 +208,18 @@ namespace BehaviorTree
             if (root == null)
             {
                 root = findRoot();
-                Debug.LogError(findRoot() + " root found");
+                //Debug.LogError(findRoot() + " root found");
             }
             if (root.findData("DefenseState") == null)
             {
-                Debug.LogError("Root: " + root);
-                Debug.LogError("DefenseState data is not in tree");
+                //Debug.LogError("Root: " + root);
+                //Debug.LogError("DefenseState data is not in tree");
                 root.addData("DefenseState", DefenseState.NONE);
                 return;
             }
             if (root.findData("DefenseState") is not DefenseState)
             {
-                Debug.LogError("DefenseState data in tree is not of type DefenseState");
+                //Debug.LogError("DefenseState data in tree is not of type DefenseState");
                 return;
             }
             if((AttackState)root.findData("AttackState") > AttackState.RECOVERY)
@@ -250,7 +250,7 @@ namespace BehaviorTree
             else
             {
                 //defended
-                Debug.Log("BLOCKED!!");
+                //Debug.Log("BLOCKED!!");
                 if((attackData.GetMoveData.hitType == HitType.OVERHEAD && curDefenseState == DefenseState.LOW_BLOCK) || 
                     (attackData.GetMoveData.hitType == HitType.LOW && curDefenseState == DefenseState.HIGH_BLOCK) || attackData.GetMoveData.powerType == PowerType.GRAB)
                 {
@@ -275,13 +275,13 @@ namespace BehaviorTree
                         playAnimation(damageAnimations[7]);
                 }
             }
-            Debug.Log("GOT HIT " + transform.name + " " + curFrame);
+            //Debug.Log("GOT HIT " + transform.name + " " + curFrame);
             rb.velocity = Vector3.zero;
-            GameManager.Instance.hitStop(.13f);
+            GameManager.Instance.hitStop(.26f);
         }
         void GotHitConnect(CurrentAttackData attackData)
         {
-            Debug.Log("HIT CONNECTED");
+            //Debug.Log("HIT CONNECTED");
             //We need to know to recover from the crouching animation later (to set AttackState.HIT_STUN_CROUCH)
             bool hitStunCrouch = false;
 
@@ -397,7 +397,7 @@ namespace BehaviorTree
                 return "1";
             else if (down & right)
             {
-                Debug.Log("RETURNS 3");
+                //Debug.Log("RETURNS 3");
                 return "3";
             }
             return currentKey;

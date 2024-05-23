@@ -8,7 +8,7 @@ namespace BehaviorTree
         //base sets up a new inputManager for this tree specifically and adds movement and attack buttons
         public Char_01_Tree(int playerSlotNumber, GameObject characterBody) : base(playerSlotNumber, characterBody)
         {
-            Debug.Log("CHAR 1 TREE MADE");
+            //Debug.Log("CHAR 1 TREE MADE");
             rb = characterBody.GetComponent<Rigidbody>();
             transform = rb.transform;
             animator = transform.GetChild(0).GetComponent<Animator>();
@@ -21,7 +21,7 @@ namespace BehaviorTree
             recoveryAnimations = moveListHolder.recoveryAnimations;
             physMat = moveListHolder.physMatList;
 
-            Debug.Log(this + " TREE");
+            //Debug.Log(this + " TREE");
 
             #region ATTACKS
             List<MoveData> moveList = moveListHolder.moveList;

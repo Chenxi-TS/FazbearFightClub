@@ -67,19 +67,19 @@ namespace BehaviorTree
             if (root == null)
             {
                 root = findRoot();
-                Debug.Log("ATTACK ROOT " + root);
+                //Debug.Log("ATTACK ROOT " + root);
             }
             //Checking status of "AttackState"
             //-> warns if "AttackState" is missing
             //-> warns if "AttackState" is not type of AttackState
             if (findData("AttackState") == null)
             {
-                Debug.Log("AttackState data is not in tree");
+                //Debug.Log("AttackState data is not in tree");
                 return NodeState.FAILURE;
             }
             if (findData("AttackState") is not AttackState)
             {
-                Debug.Log("AttackState data in tree is not of type AttackState");
+                //Debug.Log("AttackState data in tree is not of type AttackState");
                 return NodeState.FAILURE;
             }
 
@@ -90,7 +90,7 @@ namespace BehaviorTree
             AttackState currentAttackState = (AttackState)findData("AttackState");
             if (currentAttackState >= AttackState.HIT_STUN_RECOVERY)
             {
-                Debug.Log("Recovering from hit");
+                //Debug.Log("Recovering from hit");
                 return NodeState.FAILURE;
             }
             if (currentAttackState == AttackState.NONE && prereqMove == null)
@@ -122,7 +122,7 @@ namespace BehaviorTree
                     case < MoveType.COMMAND:
                         if (moveData.type > currentAttackType)
                         {
-                            Debug.Log("CANCEL? " + moveData.type + " vs. " + currentAttackType);
+                            //Debug.Log("CANCEL? " + moveData.type + " vs. " + currentAttackType);
                             performAttack((GroundState)findData("GroundState"));
                         }
                         break;
@@ -140,7 +140,7 @@ namespace BehaviorTree
                             foreach(MoveData specials in currentAttackData.GetMoveData.specialCancelables)
                             {
                                 if (specials.type != MoveType.SPECIAL)
-                                    Debug.LogError(currentAttackData.GetMoveData.moveName + " has " + specials.moveName + " in specialCancelables and is not a special");
+                                    //Debug.LogError(currentAttackData.GetMoveData.moveName + " has " + specials.moveName + " in specialCancelables and is not a special");
                                 if (specials.moveName == moveData.moveName)
                                     performAttack((GroundState)findData("GroundState"));
                             }
@@ -211,7 +211,7 @@ namespace BehaviorTree
         {
             if (GameManager.Instance.getPlayer1FacingRight)
             {
-                Debug.Log("RIGHT face");
+                //Debug.Log("RIGHT face");
                 if (playerSlot == 1)
                     hitbox.localScale = new Vector3(1 * 2.5F, hitbox.localScale.y, hitbox.localScale.z);
                 else
@@ -219,7 +219,7 @@ namespace BehaviorTree
             }
             else if (!GameManager.Instance.getPlayer1FacingRight)
             {
-                Debug.Log("LEFT face");
+                //Debug.Log("LEFT face");
                 if (playerSlot == 1)
                     hitbox.localScale = new Vector3(-1 * 2.5F, hitbox.localScale.y, hitbox.localScale.z);
                 else

@@ -49,7 +49,7 @@ namespace BehaviorTree
             
             if (actionsWithinBuffer == null && inputNotations != "")
             {
-                Debug.Log("CHECK ACTION NULL " + childrenNodes[0]);
+                //Debug.Log("CHECK ACTION NULL " + childrenNodes[0]);
                 return NodeState.FAILURE;
             }
             bool requiredInputsFound = false;
@@ -79,7 +79,7 @@ namespace BehaviorTree
                         //translate inputnotationarray here
                         if (inputNotationsArray[inputPointer] == translateForSideSwap(s) && action.Key >= lastFoundFrame)
                         {
-                            Debug.Log("PASSED " + s);
+                            //Debug.Log("PASSED " + s);
                             inputPointer++;
                             //so it stays in sequence of inputs
                             lastFoundFrame = action.Key;
@@ -106,7 +106,7 @@ namespace BehaviorTree
                 foreach(string s in action.Value)
                 {
                     string nonInput = inputNotationsArray[pointer].ToCharArray()[1].ToString();
-                    Debug.Log("NON INPUT READING " + s + " vs. " + nonInput);
+                    //Debug.Log("NON INPUT READING " + s + " vs. " + nonInput);
                     if (s == nonInput)
                     {
                         return false;
@@ -114,7 +114,7 @@ namespace BehaviorTree
                 }
                 pointer++;
             }
-            Debug.Log("NON INPUT, UNCROUCH " + pointer);
+            //Debug.Log("NON INPUT, UNCROUCH " + pointer);
             return true;
         }
         //gets the frame when the first action within the buffer was pressed

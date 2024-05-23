@@ -19,7 +19,7 @@ public class InputHandler
         {
             ktc.Value.AddObserver(tree);
             keyToCommand.Add(ktc.Key, ktc.Value);
-            Debug.Log("Added " + ktc.Value + " for " + tree);
+            //Debug.Log("Added " + ktc.Value + " for " + tree);
         }
     }
 
@@ -60,7 +60,7 @@ public class InputHandler
     {
         if (commandToChange == null)
         {
-            Debug.LogError("Command to change does not exist");
+            //Debug.LogError("Command to change does not exist");
             return;
         }
         this.commandToChangeKeyCode = commandToChange;
