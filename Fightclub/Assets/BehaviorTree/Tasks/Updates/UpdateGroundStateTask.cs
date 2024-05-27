@@ -34,6 +34,10 @@ namespace BehaviorTree
             CurrentJumpData currentJumpData;
             GroundState currentGroundState = (GroundState)findData("GroundState");
 
+            if (!checkDataStatus("GroundState", GroundState.GROUNDED))
+                return NodeState.FAILURE;
+            AttackState attackState = (AttackState)findData("AttackState");
+
             switch(currentGroundState)
             {
                 case GroundState.GROUNDED:
@@ -67,10 +71,19 @@ namespace BehaviorTree
                     if (findData("RecoveryJump") == null)
                     {
                         //Debug.Log("Ground layer is number: " + LayerMask.GetMask("Ground")); //8
+                        
                         RaycastHit hit;
                         if (Physics.Raycast(transform.position, Vector3.down, out hit, 1.05f, 8))
                         {
                             Debug.DrawLine(transform.position, transform.position + transform.TransformDirection(Vector3.down) * hit.distance, Color.green);
+                            if (attackState == AttackState.RECOVERY || attackState == AttackState.START_UP)
+                            {
+                                root.removeData("AttackState");
+                                root.addData("AttackState", AttackState.NONE);
+                                return NodeState.FAILURE;
+                            }
+                            else if (attackState != AttackState.NONE)
+                                return NodeState.FAILURE;
 
                             currentJumpData = (CurrentJumpData)findData("StartUpJump");
                             removeData("StartUpJump");

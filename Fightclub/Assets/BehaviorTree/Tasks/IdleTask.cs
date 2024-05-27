@@ -38,11 +38,13 @@ namespace BehaviorTree
             AttackState attackState = (AttackState)findData("AttackState");
             MovementState moveState = (MovementState)findData("MovementState");
             
-            //Debug.Log("aidle " + attackState);
             if (attackState != AttackState.NONE)
                 return NodeState.FAILURE;
             if (moveState != MovementState.WALKING)
                 return NodeState.FAILURE;
+
+
+            Debug.Log("aidle " + attackState);
             rb.velocity = Vector3.zero;
             masterTree.playAnimation(idle);
             removeData("MovementState");
