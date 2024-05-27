@@ -48,9 +48,11 @@ namespace BehaviorTree
                     }
                     removeData("GroundState");
                     root.addData("GroundState", GroundState.START_UP);
+                    Debug.Log(GameManager.Instance.GetCurrentFrame + "CHECKING JUMP FRAMES");
                     break;
                 case GroundState.START_UP:
-                    currentJumpData = (CurrentJumpData)findData("StartUpJump"); 
+                    currentJumpData = (CurrentJumpData)findData("StartUpJump");
+                    Debug.Log(GameManager.Instance.GetCurrentFrame + "CHECKING JUMP FRAMES");
                     if (GameManager.Instance.GetCurrentFrame - currentJumpData.startFrame > currentJumpData.startUp)
                     {
                         rb.AddForce(currentJumpData.force * new Vector3(currentJumpData.direction * .5f, 1, 0), ForceMode.Impulse);

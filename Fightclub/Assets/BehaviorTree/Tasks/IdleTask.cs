@@ -43,8 +43,6 @@ namespace BehaviorTree
             if (moveState != MovementState.WALKING)
                 return NodeState.FAILURE;
 
-
-            Debug.Log("aidle " + attackState);
             rb.velocity = Vector3.zero;
             masterTree.playAnimation(idle);
             removeData("MovementState");
