@@ -5,7 +5,7 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638515674260524862
+      ticks: 638533764071590244
     m_Hash: 3206586641
   m_LockFileStatus:
     m_FilePath: C:/Users/4camd/OneDrive - Clark University/Documents/GitHub/FazbearFightClub/Fightclub/Packages/packages-lock.json
@@ -13,7 +13,7 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638515674260524862
+      ticks: 638533764071579173
     m_Hash: 3426401925
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
